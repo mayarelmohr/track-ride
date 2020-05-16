@@ -1,0 +1,12 @@
+.infoWrapper {
+  padding: 5px;
+  background-color: #fff;
+  border-radius: 7px;
+  border-bottom-left-radius: 0;
+}
+
+.info {
+  position: relative;
+  padding: 0 5px;
+  left: 5px;
+}

@@ -2,9 +2,15 @@ import { createAction, createReducer } from "redux-act";
 
 const initialState = {
   stations: [],
+  directions: {},
+  currentLocation: {},
 };
 
 export const setStations = createAction("Stations: set stations");
+export const setDirections = createAction("Directions: set Directions");
+export const updateMarkerLocation = createAction(
+  "Location: update current location"
+);
 
 export default createReducer(
   {
@@ -22,6 +28,16 @@ export default createReducer(
         stations,
       };
     },
+    [setDirections]: (state, directions) => {
+      return {
+        ...state,
+        directions,
+      };
+    },
+    [updateMarkerLocation]: (state, location) => ({
+      ...state,
+      currentLocation: location,
+    }),
   },
   initialState
 );

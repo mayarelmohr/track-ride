@@ -1,0 +1,15 @@
+{
+  "smallCircle": {
+    "scale": 4.5,
+    "fillColor": "#000",
+    "fillOpacity": 1,
+    "strokeWeight": 0.3
+  },
+  "largeCircle": {
+    "scale": 7.5,
+    "fillColor": "#FD376B",
+    "strokeColor": "#FD376B",
+    "fillOpacity": 1,
+    "strokeWeight": 0.3
+  }
+}
