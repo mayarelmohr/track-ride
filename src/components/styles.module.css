@@ -1,0 +1,14 @@
+.container {
+  max-width: 900px;
+  margin: 0 auto;
+  padding: 10px;
+}
+
+.buttons {
+  text-align: center;
+  margin: 10px 0;
+}
+
+.buttons button {
+  margin: 0 5px;
+}

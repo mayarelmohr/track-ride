@@ -1,0 +1,43 @@
+.fieldset {
+  padding: 0;
+  margin: 0;
+  border: none;
+  display: block;
+  min-width: 100%;
+}
+
+.input {
+  height: 20px;
+  padding: 5px;
+  border: solid 1px #999;
+  margin-top: 5px;
+  display: block;
+}
+
+.input:focus {
+  outline: none;
+}
+
+.label {
+  font-size: 14px;
+  color: #000;
+  margin: 10px 0;
+  display: block;
+}
+
+.form-wrapper {
+  padding: 10px;
+}
+
+.legend {
+  font-size: 18px;
+  font-weight: bold;
+}
+
+.radio-label {
+  padding-left: 10px;
+}
+
+input + .radio-label {
+  margin-right: 10px;
+}
