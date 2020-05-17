@@ -1,13 +1,16 @@
-export const getOrigin = (stations = []) => {
-  return stations[0];
+export const getStartPoint = (stations) => {
+  const stationsArray = stations.valueSeq().toArray();
+  return stationsArray[0];
 };
 
-export const getDestination = (stations = []) => {
-  return stations[stations.length - 1];
+export const getEndPoint = (stations) => {
+  const stationsArray = stations.valueSeq().toArray();
+  return stationsArray[stationsArray.length - 1];
 };
 
-export const getStationsBetweenStartAndEnd = (stations = []) => {
-  const middleStations = stations.slice(1, -1);
+export const getStationsBetweenStartAndEnd = (stations) => {
+  const stationsArray = stations.valueSeq().toArray();
+  const middleStations = stationsArray.slice(1, -1);
   return middleStations;
 };
 
@@ -24,4 +27,17 @@ export const getStationsPath = (directions) => {
     acc.push(pathPerStop.flat());
     return acc;
   }, []);
+};
+
+export const getDistance = (directions) => {
+  if (!directions.routes) {
+    return [];
+  }
+  const { legs } = directions.routes[0];
+  const distance = legs.reduce((acc, val) => {
+    const distance = val.distance.value;
+    acc += distance;
+    return acc;
+  }, 0);
+  return Math.round(distance / 1000);
 };

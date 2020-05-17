@@ -11,8 +11,8 @@ import { connect } from "react-redux";
 import MarkerInfo from "./markerInfo";
 
 import {
-  getOrigin,
-  getDestination,
+  getStartPoint,
+  getEndPoint,
   getStationsBetweenStartAndEnd,
   getStationsPath,
 } from "../../selectors/stations";
@@ -24,7 +24,14 @@ import mapStyles from "./mapStyles/map.json";
 var google;
 
 const MapElement = React.memo((props) => {
-  const { stations, origin, destination, middleStations, path } = props;
+  const {
+    stations,
+    startPoint,
+    endPoint,
+    middleStations,
+    path,
+    currentStationPosition,
+  } = props;
   useEffect(() => {
     google = window.google;
     const { LatLng } = google.maps;
@@ -37,8 +44,8 @@ const MapElement = React.memo((props) => {
     });
     DirectionsService.route(
       {
-        origin: new LatLng(origin.lat, origin.lng),
-        destination: new LatLng(destination.lat, destination.lng),
+        origin: new LatLng(startPoint.lat, startPoint.lng),
+        destination: new LatLng(endPoint.lat, endPoint.lng),
         waypoints: wayPoints,
         travelMode: "DRIVING",
         drivingOptions: {
@@ -64,7 +71,10 @@ const MapElement = React.memo((props) => {
         disableDefaultUI: true,
       }}
       defaultCenter={
-        new window.google.maps.LatLng(stations[3].lat, stations[3].lng)
+        new window.google.maps.LatLng(
+          currentStationPosition.lat,
+          currentStationPosition.lng
+        )
       }
     >
       <DirectionsRenderer
@@ -79,11 +89,11 @@ const MapElement = React.memo((props) => {
       {stations.map((station) => (
         <MarkerInfo
           station={station}
-          large={station.id === origin.id || station.id === destination.id}
+          //large={station.id === startPoint.id || station.id === endPoint.id}
         />
       ))}
       <Marker
-        defaultIcon={"./car.svg"}
+        defaultIcon={"./images/car.svg"}
         position={{
           lat: props.currentLocation.lat,
           lng: props.currentLocation.lng,
@@ -94,15 +104,17 @@ const MapElement = React.memo((props) => {
 });
 
 const mapStateToProps = (state) => {
-  const { stations, directions, currentLocation } = state.trip;
-  const origin = getOrigin(stations);
-  const destination = getDestination(stations);
+  const { stations, directions, currentLocation, currentStation } = state.trip;
+  const startPoint = getStartPoint(stations);
+  const endPoint = getEndPoint(stations);
   const middleStations = getStationsBetweenStartAndEnd(stations);
   const path = getStationsPath(directions);
+  const currentStationPosition = stations.get(currentStation);
   return {
+    currentStationPosition,
     stations,
-    origin,
-    destination,
+    startPoint,
+    endPoint,
     middleStations,
     directions,
     currentLocation,

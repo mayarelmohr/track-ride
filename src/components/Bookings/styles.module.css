@@ -1,0 +1,44 @@
+.name {
+  font-weight: bold;
+  margin: 0;
+}
+
+.info {
+  font-size: 14px;
+  margin: 0;
+  text-transform: capitalize;
+  line-height: 1.2;
+}
+
+.image {
+  background-color: #d7d7d7;
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  overflow: hidden;
+  margin-right: 10px;
+}
+
+.user {
+  display: flex;
+}
+
+.list {
+  margin: 0 -15px;
+  padding: 0;
+  list-style: none;
+  display: flex;
+  flex-flow: row wrap;
+  align-items: flex-start;
+}
+
+.list li {
+  padding: 10px 15px;
+}
+
+@media (max-width: 767px) {
+  .list {
+    flex-flow: column;
+    align-items: flex-start;
+  }
+}

@@ -1,0 +1,27 @@
+.overlay {
+  z-index: 99999;
+  background-color: rgba(59, 59, 59, 0.45);
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+}
+
+.content {
+  position: absolute;
+  border: none;
+  background-color: #fff;
+  outline: none;
+  border-radius: 8px;
+  padding: 16px;
+  color: #000;
+  font-size: 16px;
+  max-width: 300px;
+  top: 50%;
+  right: 0;
+  left: 0;
+  transform: translateY(-50%);
+  margin: auto;
+  text-align: left;
+}
