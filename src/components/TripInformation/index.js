@@ -1,10 +1,11 @@
 import React from "react";
 import styles from "./styles.module.css";
 
-const TripInformation = React.memo(({ distance }) => {
+const TripInformation = React.memo(({ distance, time }) => {
   return (
     <section>
       <h2>Trip Information</h2>
+      <p>{`Trip Duration: ${time} ms`}</p>
       <div className={styles.wrapper}>
         <div className={styles.info}>
           <div className={styles.image}>

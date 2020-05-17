@@ -1,18 +1,30 @@
 import { createStore, applyMiddleware, compose } from "redux";
 import thunk from "redux-thunk";
-import rootReducer from "./reducers";
+import { persistStore, persistReducer } from "redux-persist";
+
+import localForage from "localforage";
+
+import reducers from "./reducers";
 
 /* eslint-disable no-underscore-dangle */
-const composeEnhancers =
-  (typeof window !== "undefined" &&
-    window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__) ||
-  compose;
-
+const composeEnhancers = window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose;
 /* eslint-enable */
 
-const store = createStore(
-  rootReducer,
-  composeEnhancers(applyMiddleware(thunk))
-);
+const persistConfig = {
+  key: "0.1.1",
+  storage: localForage,
+  whitelist: ["trip"],
+};
+const persistedReducer = persistReducer(persistConfig, reducers);
 
-export default store;
+const configureStore = (initialState = {}) => {
+  const store = createStore(
+    persistedReducer,
+    initialState,
+    composeEnhancers(applyMiddleware(thunk))
+  );
+  const persistor = persistStore(store);
+  return { store, persistor };
+};
+
+export const { store, persistor } = configureStore(window.REDUX_STATE || {});

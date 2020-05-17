@@ -2,7 +2,7 @@ import React from "react";
 import User from "./user";
 import styles from "./styles.module.css";
 
-const Bookings = React.memo(({ bookingsList }) => {
+const Bookings = ({ bookingsList }) => {
   return (
     <section>
       <h2>Bookings</h2>
@@ -15,6 +15,6 @@ const Bookings = React.memo(({ bookingsList }) => {
       </ul>
     </section>
   );
-});
+};
 
 export default Bookings;

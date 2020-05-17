@@ -1,5 +1,6 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import { connect } from "react-redux";
+import { OrderedMap } from "immutable";
 import { getAvailableStations } from "../../selectors/stations";
 import { generateBooking } from "../../reducers/trip";
 
@@ -116,7 +117,10 @@ const AddPassengerToStationForm = (props) => {
 };
 
 const mapStateToProps = (state) => {
-  const { stations } = state.trip;
+  let { stations } = state.trip;
+  if (!OrderedMap.isOrderedMap(stations)) {
+    stations = new OrderedMap(stations);
+  }
   const availableStations = getAvailableStations(stations);
   const hasStations = availableStations.size > 1;
   return {

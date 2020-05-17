@@ -6,6 +6,7 @@ import {
   Marker,
   DirectionsRenderer,
 } from "react-google-maps";
+import { OrderedMap } from "immutable";
 
 import { connect } from "react-redux";
 import MarkerInfo from "./markerInfo";
@@ -104,7 +105,11 @@ const MapElement = React.memo((props) => {
 });
 
 const mapStateToProps = (state) => {
-  const { stations, directions, currentLocation, currentStation } = state.trip;
+  const { directions, currentLocation, currentStation } = state.trip;
+  let { stations } = state.trip;
+  if (!OrderedMap.isOrderedMap(stations)) {
+    stations = new OrderedMap(stations);
+  }
   const startPoint = getStartPoint(stations);
   const endPoint = getEndPoint(stations);
   const middleStations = getStationsBetweenStartAndEnd(stations);

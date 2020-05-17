@@ -30,6 +30,13 @@ export const getStationsPath = (directions) => {
   }, []);
 };
 
+export const getPathsCount = (paths) => {
+  return paths.reduce((acc, val) => {
+    acc += val.length;
+    return acc;
+  }, 0);
+};
+
 export const getDistance = (directions) => {
   if (!directions.routes) {
     return [];
@@ -47,4 +54,18 @@ export const getAvailableStations = (stations) => {
   return stations.filter((station) => {
     return station.bookings.length < BOOK_LIMIT;
   });
+};
+
+export const calculateStopDurationPerStepInPath = (
+  stations,
+  paths,
+  totalTime,
+  stopTimePerStation
+) => {
+  const stepsCount = getPathsCount(paths);
+  const stationsCount = stations.toArray().length;
+  const totalTimeDurationStation = stationsCount * stopTimePerStation;
+  const totalTimeDurationSteps = totalTime - totalTimeDurationStation;
+  const timePerStep = totalTimeDurationSteps / stepsCount;
+  return timePerStep;
 };

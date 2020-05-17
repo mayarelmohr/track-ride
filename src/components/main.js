@@ -1,19 +1,26 @@
 import React, { useEffect, useState } from "react";
 import GoogleMap from "./Map";
 import { connect } from "react-redux";
+import { OrderedMap } from "immutable";
 import AddPassengerFrom from "./AddPassengerForm";
 import Bookings from "./Bookings";
 import TripInformation from "./TripInformation";
-import { csv } from "d3";
+import { csv, format } from "d3";
 import {
   setStations,
   updateMarkerLocation,
   setBookings,
+  setTripTime,
 } from "../reducers/trip";
 import Button from "./Common/Button";
-import { getStationsPath, getDistance } from "../selectors/stations";
+import {
+  getStationsPath,
+  getDistance,
+  calculateStopDurationPerStepInPath,
+} from "../selectors/stations";
 import styles from "./styles.module.css";
 import delay from "../helpers/delay";
+import { TRIP_TIME, STATION_STOP_DURATION } from "../helpers/constants";
 
 const Trip = (props) => {
   const [isLoading, setLoading] = useState(true);
@@ -21,35 +28,40 @@ const Trip = (props) => {
   const requestRefAnimationRef = React.useRef();
   useEffect(() => {
     async function readCSV() {
-      const stationsData = await csv("./data/route.csv");
-      props.setStationsAction(stationsData);
-      const usersData = await csv("./data/users.csv");
-      props.setBookingsAction(usersData);
+      if (!props.isReady) {
+        const stationsData = await csv("./data/route.csv");
+        props.setStationsAction(stationsData);
+        const usersData = await csv("./data/users.csv");
+        props.setBookingsAction(usersData);
+        props.setTripTimeAction(TRIP_TIME);
+      }
       setLoading(false);
     }
     readCSV();
   }, []);
 
-  const startRide = () => {
+  const startRide = (paths, stepDuration = 0, stationDuration = 0) => {
     if (!requestRefAnimationRef.current) {
       requestRefAnimationRef.current = window.requestAnimationFrame(
-        updateLocation
+        function () {
+          updateLocation(paths, stepDuration, stationDuration);
+        }
       );
     }
   };
 
-  const updateLocation = async () => {
-    const { paths } = props;
+  const updateLocation = async (paths, stepDuration, stationDuration) => {
     for (let i = 0; i < paths.length; i++) {
       let path = paths[i];
-      path.every(async (point, index) => {
-        await delay(3 * index + 1);
+      for (let j = 0; j < path.length; j++) {
+        let step = path[j];
+        await delay(stepDuration);
         props.updateMarkerLocationAction({
-          lat: point.lat(),
-          lng: point.lng(),
+          lat: step.lat(),
+          lng: step.lng(),
         });
-      });
-      await delay(1000);
+      }
+      await delay(stationDuration);
     }
     window.cancelAnimationFrame(requestRefAnimationRef);
   };
@@ -57,7 +69,7 @@ const Trip = (props) => {
     return "Loading";
   }
 
-  const { bookingsList, distance } = props;
+  const { bookingsList, distance, tripTime, paths, stepDuration } = props;
   return (
     <div>
       <GoogleMap />
@@ -67,7 +79,8 @@ const Trip = (props) => {
             text="Start ride"
             type="button"
             action={() => {
-              startRide();
+              props.updateMarkerLocationAction({ lat: 0, lng: 0 });
+              startRide(paths, stepDuration, STATION_STOP_DURATION);
             }}
           />
           <Button
@@ -78,7 +91,7 @@ const Trip = (props) => {
             }}
           />
         </div>
-        <TripInformation distance={distance} />
+        <TripInformation distance={distance} time={tripTime} />
         <Bookings bookingsList={bookingsList} />
         <AddPassengerFrom
           isModalVisible={isBookRideFormVisible}
@@ -91,14 +104,27 @@ const Trip = (props) => {
 };
 
 const mapStateToProps = (state) => {
-  const { directions, currentStation, stations } = state.trip;
+  const { directions, isReady, currentStation, tripTime } = state.trip;
+  let { stations } = state.trip;
   const paths = getStationsPath(directions);
   const distance = getDistance(directions);
+  if (!OrderedMap.isOrderedMap(stations)) {
+    stations = new OrderedMap(stations);
+  }
+  const stepDuration = calculateStopDurationPerStepInPath(
+    stations,
+    paths,
+    TRIP_TIME,
+    STATION_STOP_DURATION
+  );
   const { bookings } = stations.get(currentStation) || [];
   return {
+    isReady,
     distance,
     paths,
+    stepDuration,
     bookingsList: bookings,
+    tripTime,
   };
 };
 
@@ -108,6 +134,7 @@ const mapDispatchToProps = (dispatch) => {
     setBookingsAction: (data) => dispatch(setBookings(data)),
     updateMarkerLocationAction: ({ lat, lng }) =>
       dispatch(updateMarkerLocation({ lat, lng })),
+    setTripTimeAction: (time) => dispatch(setTripTime(time)),
   };
 };
 

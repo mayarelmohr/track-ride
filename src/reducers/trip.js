@@ -1,12 +1,14 @@
 import { createAction, createReducer } from "redux-act";
 import { OrderedMap } from "immutable";
 import generateBookingData from "../helpers/generateBooking";
+import { TIME_SHIFT } from "../helpers/constants";
 
 const initialState = {
   stations: new OrderedMap(),
   directions: {},
   currentLocation: {},
   currentStation: "",
+  isReady: false,
 };
 
 export const setStations = createAction("Stations: set stations");
@@ -16,13 +18,17 @@ export const setDirections = createAction("Directions: set Directions");
 export const updateMarkerLocation = createAction(
   "Location: update current location"
 );
+export const setTripTime = createAction("Time: set trip time");
 
 export default createReducer(
   {
     [setStations]: (state, routes) => {
       let { stations } = state;
+      if (!OrderedMap.isOrderedMap(stations)) {
+        stations = new OrderedMap(stations);
+      }
       routes.map((route) => {
-        const id = Number(route["station_id"]);
+        const id = route["station_id"];
         stations = stations.set(id, {
           lat: Number(route["station_latitude"]),
           lng: Number(route["station_longitude"]),
@@ -40,8 +46,8 @@ export default createReducer(
     [setBookings]: (state, users) => {
       let { stations } = state;
       users.map((user) => {
-        const stationId = Number(user.station);
-        const stationData = stations.get(Number(stationId));
+        const { station: stationId } = user;
+        const stationData = stations.get(stationId);
         stationData.bookings.push(user);
         stations = stations.set(stationId, stationData);
       });
@@ -54,7 +60,10 @@ export default createReducer(
     },
     [generateBooking]: (state, data) => {
       let { stations } = state;
-      const stationId = Number(data.station);
+      const { station: stationId } = data;
+      if (!OrderedMap.isOrderedMap(stations)) {
+        stations = new OrderedMap(stations);
+      }
       const stationData = stations.get(stationId);
       const userId =
         Math.floor(Math.random() * 10000) +
@@ -71,12 +80,20 @@ export default createReducer(
       return {
         ...state,
         directions,
+        isReady: true,
       };
     },
     [updateMarkerLocation]: (state, location) => ({
       ...state,
       currentLocation: location,
     }),
+    [setTripTime]: (state, time) => {
+      const timeIndex = Math.floor(Math.random() * 3) + 1;
+      return {
+        ...state,
+        tripTime: time + TIME_SHIFT[timeIndex - 1],
+      };
+    },
   },
   initialState
 );
