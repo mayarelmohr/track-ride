@@ -48,32 +48,12 @@ const MapElement = React.memo((props) => {
       async (result, status) => {
         if (status === google.maps.DirectionsStatus.OK) {
           await props.setDirectionsAction(result);
-          updateLocation(path);
         } else {
           console.error(`error fetching directions ${result}`);
         }
       }
     );
   }, [stations]);
-
-  const sleep = (milliseconds) => {
-    return new Promise((resolve) => setTimeout(resolve, milliseconds));
-  };
-
-  const updateLocation = async (paths) => {
-    for (let j = 0; j < paths.length; j++) {
-      let path = paths[j];
-      for (let i = 0; i < path.length; i++) {
-        await sleep(1);
-        const point = path[i];
-        props.updateMarkerLocationAction({
-          lat: point.lat(),
-          lng: point.lng(),
-        });
-      }
-      await sleep(3000);
-    }
-  };
 
   return (
     <GoogleMap
@@ -103,12 +83,10 @@ const MapElement = React.memo((props) => {
         />
       ))}
       <Marker
-        defaultIcon={"/car.svg"}
+        defaultIcon={"./car.svg"}
         position={{
-          //  lat: props.currentLocation.lat,
-          //  lng: props.currentLocation.lng,
-          lat: stations[0].lat,
-          lng: stations[0].lng,
+          lat: props.currentLocation.lat,
+          lng: props.currentLocation.lng,
         }}
       />
     </GoogleMap>
@@ -121,7 +99,6 @@ const mapStateToProps = (state) => {
   const destination = getDestination(stations);
   const middleStations = getStationsBetweenStartAndEnd(stations);
   const path = getStationsPath(directions);
-  debugger;
   return {
     stations,
     origin,
