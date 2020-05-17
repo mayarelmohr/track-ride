@@ -1,5 +1,6 @@
 import { createAction, createReducer } from "redux-act";
 import { OrderedMap } from "immutable";
+import generateBookingData from "../helpers/generateBooking";
 
 const initialState = {
   stations: new OrderedMap(),
@@ -10,6 +11,7 @@ const initialState = {
 
 export const setStations = createAction("Stations: set stations");
 export const setBookings = createAction("Bookings: set bookings");
+export const generateBooking = createAction("Bookings: generate booking");
 export const setDirections = createAction("Directions: set Directions");
 export const updateMarkerLocation = createAction(
   "Location: update current location"
@@ -19,15 +21,17 @@ export default createReducer(
   {
     [setStations]: (state, routes) => {
       let { stations } = state;
-      routes.map(
-        (route) =>
-          (stations = stations.set(Number(route["station_id"]), {
-            lat: Number(route["station_latitude"]),
-            lng: Number(route["station_longitude"]),
-            name: route["station_name"],
-            bookings: [],
-          }))
-      );
+      routes.map((route) => {
+        const id = Number(route["station_id"]);
+        stations = stations.set(id, {
+          lat: Number(route["station_latitude"]),
+          lng: Number(route["station_longitude"]),
+          name: route["station_name"],
+          bookings: [],
+          id,
+        });
+      });
+
       return {
         ...state,
         stations,
@@ -46,6 +50,21 @@ export default createReducer(
         ...state,
         stations,
         currentStation: stationsKeys[0],
+      };
+    },
+    [generateBooking]: (state, data) => {
+      let { stations } = state;
+      const stationId = Number(data.station);
+      const stationData = stations.get(stationId);
+      const userId =
+        Math.floor(Math.random() * 10000) +
+        100; /** Added 100 to avoid duplicating ids from csv */
+      const generatedData = generateBookingData(userId);
+      stationData.bookings.push({ ...data, ...generatedData });
+      stations = stations.set(stationId, stationData);
+      return {
+        ...state,
+        stations,
       };
     },
     [setDirections]: (state, directions) => {

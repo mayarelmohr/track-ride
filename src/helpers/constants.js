@@ -1,7 +1,7 @@
-const BOOKING = {
+export const BOOKING = {
   IN: "checked in",
   MISSED: "missed",
   OUT: "checked out",
 };
 
-export default BOOKING;
+export const BOOK_LIMIT = 12;

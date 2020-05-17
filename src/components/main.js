@@ -13,10 +13,12 @@ import {
 import Button from "./Common/Button";
 import { getStationsPath, getDistance } from "../selectors/stations";
 import styles from "./styles.module.css";
+import delay from "../helpers/delay";
 
 const Trip = (props) => {
   const [isLoading, setLoading] = useState(true);
   const [isBookRideFormVisible, setBookRideFormVisibility] = useState(false);
+  const requestRefAnimationRef = React.useRef();
   useEffect(() => {
     async function readCSV() {
       const stationsData = await csv("./data/route.csv");
@@ -27,24 +29,29 @@ const Trip = (props) => {
     }
     readCSV();
   }, []);
-  const sleep = (milliseconds) => {
-    return new Promise((resolve) => setTimeout(resolve, milliseconds));
+
+  const startRide = () => {
+    if (!requestRefAnimationRef.current) {
+      requestRefAnimationRef.current = window.requestAnimationFrame(
+        updateLocation
+      );
+    }
   };
 
   const updateLocation = async () => {
     const { paths } = props;
-    for (let j = 0; j < paths.length; j++) {
-      let path = paths[j];
-      for (let i = 0; i < path.length; i++) {
-        await sleep(1);
-        const point = path[i];
+    for (let i = 0; i < paths.length; i++) {
+      let path = paths[i];
+      path.every(async (point, index) => {
+        await delay(3 * index + 1);
         props.updateMarkerLocationAction({
           lat: point.lat(),
           lng: point.lng(),
         });
-      }
-      await sleep(3000);
+      });
+      await delay(1000);
     }
+    window.cancelAnimationFrame(requestRefAnimationRef);
   };
   if (isLoading) {
     return "Loading";
@@ -60,7 +67,7 @@ const Trip = (props) => {
             text="Start ride"
             type="button"
             action={() => {
-              updateLocation();
+              startRide();
             }}
           />
           <Button

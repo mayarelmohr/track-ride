@@ -1,3 +1,4 @@
+import { BOOK_LIMIT } from "../helpers/constants";
 export const getStartPoint = (stations) => {
   const stationsArray = stations.valueSeq().toArray();
   return stationsArray[0];
@@ -40,4 +41,10 @@ export const getDistance = (directions) => {
     return acc;
   }, 0);
   return Math.round(distance / 1000);
+};
+
+export const getAvailableStations = (stations) => {
+  return stations.filter((station) => {
+    return station.bookings.length < BOOK_LIMIT;
+  });
 };

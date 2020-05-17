@@ -1,5 +1,5 @@
 import React from "react";
-import BOOKING from "./constants";
+import { BOOKING } from "../../helpers/constants";
 import styles from "./styles.module.css";
 
 const User = React.memo(({ booking }) => {

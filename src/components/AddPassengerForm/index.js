@@ -1,22 +1,49 @@
 import React, { useState, useEffect } from "react";
 import { connect } from "react-redux";
-import { getStationsPath } from "../../selectors/stations";
+import { getAvailableStations } from "../../selectors/stations";
+import { generateBooking } from "../../reducers/trip";
+
+import Button from "../Common/Button";
 import withModal from "../Common/ModalHOC";
 import styles from "./styles.module.css";
 
 const AddPassengerToStationForm = (props) => {
+  const { availableStations, hasStations } = props;
   const [values, setValues] = useState({
     name: "",
+    station: "",
     payment: "cash",
   });
+  const [errors, setErrors] = useState({});
+
   const handleChange = (event) => {
+    event.preventDefault();
     const { target } = event;
     const { name, value } = target;
+    if (value && errors[name]) {
+      setErrors([name], "");
+    }
     setValues({ ...values, [name]: value });
   };
-  console.log(values);
+
+  const handleSubmit = (event) => {
+    event.preventDefault();
+    let submitErrors = {};
+    for (const attribute in values) {
+      if (!values[attribute]) {
+        submitErrors[attribute] = `Please add ${attribute}`;
+      }
+    }
+    if (Object.keys(submitErrors).length > 0) {
+      setErrors(submitErrors);
+      return;
+    }
+    props.generateBookingAction(values);
+    props.onDismissAction();
+  };
+
   return (
-    <form className={styles["form-wrapper"]}>
+    <form className={styles["form-wrapper"]} onSubmit={handleSubmit}>
       <fieldset className={styles.fieldset}>
         <legend className={styles.legend}>Book Ride</legend>
         <label className={styles.label}>
@@ -29,6 +56,7 @@ const AddPassengerToStationForm = (props) => {
             value={values.name}
           />
         </label>
+        {errors.name ? <p className={styles.error}>{errors.name}</p> : null}
         <label htmlFor="station" className={styles.label}>
           Station:
           <select
@@ -39,9 +67,18 @@ const AddPassengerToStationForm = (props) => {
             value={values.station}
           >
             <option value="">Station</option>
-            <option value="dog">123</option>
+            {availableStations.map((station) => {
+              return (
+                <option key={station.id} value={station.id}>
+                  {station.name}
+                </option>
+              );
+            })}
           </select>
         </label>
+        {errors.station ? (
+          <p className={styles.error}>{errors.station}</p>
+        ) : null}
         <label>
           <span className={styles.label}>Select you payment:</span>
           <input
@@ -68,19 +105,30 @@ const AddPassengerToStationForm = (props) => {
           </label>
         </label>
       </fieldset>
+      <p className={styles.button}>
+        {hasStations ? null : (
+          <p className={styles.error}>Sorry, All stations are full</p>
+        )}
+        <Button disabled={!hasStations} type="submit" text="Add passenger" />
+      </p>
     </form>
   );
 };
 
 const mapStateToProps = (state) => {
   const { stations } = state.trip;
+  const availableStations = getAvailableStations(stations);
+  const hasStations = availableStations.size > 1;
   return {
-    stations,
+    availableStations,
+    hasStations,
   };
 };
 
 const mapDispatchToProps = (dispatch) => {
-  return {};
+  return {
+    generateBookingAction: (data) => dispatch(generateBooking(data)),
+  };
 };
 
 export default connect(
