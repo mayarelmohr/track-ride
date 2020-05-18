@@ -26,16 +26,19 @@ const Trip = (props) => {
   const [isLoading, setLoading] = useState(true);
   const [isBookRideFormVisible, setBookRideFormVisibility] = useState(false);
   const requestRefAnimationRef = React.useRef();
+  const readCSV = async () => {
+    const stationsData = await csv("./data/route.csv");
+    props.setStationsAction(stationsData);
+    const usersData = await csv("./data/users.csv");
+    props.setBookingsAction(usersData);
+    props.setTripTimeAction(TRIP_TIME);
+  };
   useEffect(() => {
-    async function readCSV() {
-      const stationsData = await csv("./data/route.csv");
-      props.setStationsAction(stationsData);
-      const usersData = await csv("./data/users.csv");
-      props.setBookingsAction(usersData);
-      props.setTripTimeAction(TRIP_TIME);
+    if (props.isDataReady) {
+      readCSV();
       setLoading(false);
     }
-    readCSV();
+    setLoading(false);
   }, []);
 
   const startRide = (paths, stepDuration = 0, stationDuration = 0) => {

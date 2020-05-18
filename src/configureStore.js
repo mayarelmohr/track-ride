@@ -7,8 +7,14 @@ import { OrderedMap } from "immutable";
 import { createTransform } from "redux-persist";
 
 const SetTransform = createTransform(
+  (inboundState) => {
+    return { ...inboundState, stations: inboundState.stations.toArray() };
+  },
   (outboundState) => {
-    return { ...outboundState, station: new OrderedMap(outboundState.mySet) };
+    return {
+      ...outboundState,
+      stations: new OrderedMap(outboundState.stations),
+    };
   },
   { whitelist: ["trip"] }
 );
