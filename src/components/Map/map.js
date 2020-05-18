@@ -32,7 +32,7 @@ const MapElement = React.memo((props) => {
     middleStations,
     currentStationPosition,
   } = props;
-  useEffect(() => {
+  const getDirections = () => {
     google = window.google;
     const { LatLng } = google.maps;
     const DirectionsService = new google.maps.DirectionsService();
@@ -60,6 +60,9 @@ const MapElement = React.memo((props) => {
         }
       }
     );
+  };
+  useEffect(() => {
+    getDirections();
   }, []);
 
   return (

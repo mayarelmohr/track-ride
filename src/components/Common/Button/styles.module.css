@@ -10,11 +10,14 @@
   font-size: 14px;
   text-transform: uppercase;
 }
-.button:hover {
+
+.button:hover,
+.button:disabled {
   background-color: #fff;
   color: #000;
   cursor: pointer;
 }
+
 .button:focus {
   outline: none;
 }

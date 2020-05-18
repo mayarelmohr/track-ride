@@ -1,7 +1,7 @@
 import { createAction, createReducer } from "redux-act";
 import { OrderedMap } from "immutable";
 import generateBookingData from "../helpers/generateBooking";
-import { TIME_SHIFT } from "../helpers/constants";
+import { TIME_SHIFT, TRIP_STATE } from "../helpers/constants";
 
 const initialState = {
   stations: new OrderedMap(),
@@ -10,6 +10,8 @@ const initialState = {
   markerPosition: {},
   currentStation: "",
   isDataReady: false,
+  tripState: TRIP_STATE.IDLE,
+  currentStationPosition: {},
 };
 
 export const setStations = createAction("Stations: set stations");
@@ -22,7 +24,7 @@ export const updateMarkerLocation = createAction(
 export const updateMarkerPosition = createAction(
   "Location: update marker position"
 );
-
+export const setTripState = createAction("Trip: set current state");
 export const setTripTime = createAction("Time: set trip time");
 
 export default createReducer(
@@ -99,6 +101,12 @@ export default createReducer(
       return {
         ...state,
         tripTime: time + TIME_SHIFT[timeIndex - 1],
+      };
+    },
+    [setTripState]: (state, newState) => {
+      return {
+        ...state,
+        tripState: newState,
       };
     },
   },
