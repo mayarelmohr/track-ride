@@ -2,7 +2,7 @@ import { createStore, applyMiddleware, compose } from "redux";
 import thunk from "redux-thunk";
 import { persistStore, persistReducer } from "redux-persist";
 import localForage from "localforage";
-import rootReducer from "./reducers";
+import { rootReducer } from "./reducers";
 import { OrderedMap } from "immutable";
 import { createTransform } from "redux-persist";
 
