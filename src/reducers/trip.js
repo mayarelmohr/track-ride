@@ -61,9 +61,6 @@ export default createReducer(
     [generateBooking]: (state, data) => {
       let { stations } = state;
       const { station: stationId } = data;
-      if (!OrderedMap.isOrderedMap(stations)) {
-        stations = new OrderedMap(stations);
-      }
       const stationData = stations.get(stationId);
       const userId =
         Math.floor(Math.random() * 10000) +

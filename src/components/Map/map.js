@@ -30,7 +30,6 @@ const MapElement = React.memo((props) => {
     startPoint,
     endPoint,
     middleStations,
-    path,
     currentStationPosition,
   } = props;
   useEffect(() => {
@@ -90,7 +89,7 @@ const MapElement = React.memo((props) => {
       {stations.map((station) => (
         <MarkerInfo
           station={station}
-          //large={station.id === startPoint.id || station.id === endPoint.id}
+          large={station.id === startPoint.id || station.id === endPoint.id}
         />
       ))}
       <Marker

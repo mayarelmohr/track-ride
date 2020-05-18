@@ -28,13 +28,11 @@ const Trip = (props) => {
   const requestRefAnimationRef = React.useRef();
   useEffect(() => {
     async function readCSV() {
-      if (!props.isReady) {
-        const stationsData = await csv("./data/route.csv");
-        props.setStationsAction(stationsData);
-        const usersData = await csv("./data/users.csv");
-        props.setBookingsAction(usersData);
-        props.setTripTimeAction(TRIP_TIME);
-      }
+      const stationsData = await csv("./data/route.csv");
+      props.setStationsAction(stationsData);
+      const usersData = await csv("./data/users.csv");
+      props.setBookingsAction(usersData);
+      props.setTripTimeAction(TRIP_TIME);
       setLoading(false);
     }
     readCSV();
@@ -42,11 +40,9 @@ const Trip = (props) => {
 
   const startRide = (paths, stepDuration = 0, stationDuration = 0) => {
     if (!requestRefAnimationRef.current) {
-      requestRefAnimationRef.current = window.requestAnimationFrame(
-        function () {
-          updateLocation(paths, stepDuration, stationDuration);
-        }
-      );
+      requestRefAnimationRef.current = window.requestAnimationFrame(() => {
+        updateLocation(paths, stepDuration, stationDuration);
+      });
     }
   };
 
@@ -79,7 +75,6 @@ const Trip = (props) => {
             text="Start ride"
             type="button"
             action={() => {
-              props.updateMarkerLocationAction({ lat: 0, lng: 0 });
               startRide(paths, stepDuration, STATION_STOP_DURATION);
             }}
           />
@@ -104,13 +99,10 @@ const Trip = (props) => {
 };
 
 const mapStateToProps = (state) => {
-  const { directions, isReady, currentStation, tripTime } = state.trip;
+  const { directions, currentStation, tripTime } = state.trip;
   let { stations } = state.trip;
   const paths = getStationsPath(directions);
   const distance = getDistance(directions);
-  if (!OrderedMap.isOrderedMap(stations)) {
-    stations = new OrderedMap(stations);
-  }
   const stepDuration = calculateStopDurationPerStepInPath(
     stations,
     paths,
@@ -121,6 +113,8 @@ const mapStateToProps = (state) => {
   return {
     isReady,
     distance,
+    stepDuration,
+    tripTime,
     paths,
     stepDuration,
     bookingsList: bookings,

@@ -56,6 +56,13 @@ export const getAvailableStations = (stations) => {
   });
 };
 
+export const getPathsCount = (paths) => {
+  return paths.reduce((acc, val) => {
+    acc += val.length;
+    return acc;
+  }, 0);
+};
+
 export const calculateStopDurationPerStepInPath = (
   stations,
   paths,
