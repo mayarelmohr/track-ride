@@ -1,11 +1,10 @@
-import React, { useEffect, useState } from "react";
-import GoogleMap from "./Map";
-import { connect } from "react-redux";
-import { OrderedMap } from "immutable";
-import AddPassengerFrom from "./AddPassengerForm";
-import Bookings from "./Bookings";
-import TripInformation from "./TripInformation";
-import { csv, format } from "d3";
+import React, { useEffect, useState } from "./node_modules/react";
+import GoogleMap from "../../components/Map";
+import { connect } from "./node_modules/react-redux";
+import AddPassengerFrom from "../../components/AddPassengerForm";
+import Bookings from "../../components/Bookings";
+import TripInformation from "../../components/TripInformation";
+import { csv } from "./node_modules/d3";
 import {
   setStations,
   updateMarkerLocation,
@@ -13,20 +12,20 @@ import {
   setTripState,
   setBookings,
   setTripTime,
-} from "../reducers/trip";
-import Button from "./Common/Button";
+} from "../../reducers/trip";
+import Button from "../../components/Common/Button";
 import {
   getStationsPath,
   getDistance,
   calculateStopDurationPerStepInPath,
-} from "../selectors/stations";
+} from "../../selectors/stations";
 import styles from "./styles.module.css";
-import delay from "../helpers/delay";
+import delay from "../../helpers/delay";
 import {
   TRIP_TIME,
   STATION_STOP_DURATION,
   TRIP_STATE,
-} from "../helpers/constants";
+} from "../../helpers/constants";
 
 const Trip = (props) => {
   const [isLoading, setLoading] = useState(true);

@@ -1,12 +1,24 @@
 import React from "react";
-import Trip from "./components/main";
-
-const App = () => {
+import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
+import Trip from "./pages/Trip";
+import Header from "./components/Common/Header";
+export default function App() {
   return (
-    <div className="App">
-      <Trip />
-    </div>
+    <Router>
+      <div>
+        <Header />
+        <Switch>
+          <Route path="/trip/:topicId">
+            <Trip />
+          </Route>
+          <Route path="/statistics">
+            <p>Statistics</p>
+          </Route>
+          <Route path="/">
+            <Trip />
+          </Route>
+        </Switch>
+      </div>
+    </Router>
   );
-};
-
-export default App;
+}
