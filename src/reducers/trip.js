@@ -7,6 +7,7 @@ const initialState = {
   stations: new OrderedMap(),
   directions: {},
   currentLocation: {},
+  markerPosition: {},
   currentStation: "",
   isDataReady: false,
 };
@@ -18,6 +19,10 @@ export const setDirections = createAction("Directions: set Directions");
 export const updateMarkerLocation = createAction(
   "Location: update current location"
 );
+export const updateMarkerPosition = createAction(
+  "Location: update marker position"
+);
+
 export const setTripTime = createAction("Time: set trip time");
 
 export default createReducer(
@@ -84,6 +89,10 @@ export default createReducer(
     [updateMarkerLocation]: (state, location) => ({
       ...state,
       currentLocation: location,
+    }),
+    [updateMarkerPosition]: (state, position) => ({
+      ...state,
+      markerPosition: position,
     }),
     [setTripTime]: (state, time) => {
       const timeIndex = Math.floor(Math.random() * 3) + 1;

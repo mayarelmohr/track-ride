@@ -60,7 +60,7 @@ const MapElement = React.memo((props) => {
         }
       }
     );
-  }, [stations]);
+  }, []);
 
   return (
     <GoogleMap

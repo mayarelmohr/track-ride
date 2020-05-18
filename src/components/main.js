@@ -9,6 +9,7 @@ import { csv, format } from "d3";
 import {
   setStations,
   updateMarkerLocation,
+  updateMarkerPosition,
   setBookings,
   setTripTime,
 } from "../reducers/trip";
@@ -41,20 +42,30 @@ const Trip = (props) => {
     setLoading(false);
   }, []);
 
-  const startRide = (paths, stepDuration = 0, stationDuration = 0) => {
+  const startRide = (rideInfo) => {
     if (!requestRefAnimationRef.current) {
       requestRefAnimationRef.current = window.requestAnimationFrame(() => {
-        updateLocation(paths, stepDuration, stationDuration);
+        updateLocation(rideInfo);
       });
     }
   };
 
-  const updateLocation = async (paths, stepDuration, stationDuration) => {
-    for (let i = 0; i < paths.length; i++) {
+  const updateLocation = async ({
+    paths,
+    stepDuration,
+    stationDuration,
+    startPosX = 0,
+    startPosY = 0,
+  }) => {
+    for (let i = startPosX; i < paths.length; i++) {
       let path = paths[i];
-      for (let j = 0; j < path.length; j++) {
+      for (let j = startPosY; j < path.length; j++) {
         let step = path[j];
         await delay(stepDuration);
+        props.updateMarkerPositionsAction({
+          x: i,
+          y: j,
+        });
         props.updateMarkerLocationAction({
           lat: step.lat(),
           lng: step.lng(),
@@ -78,7 +89,7 @@ const Trip = (props) => {
             text="Start ride"
             type="button"
             action={() => {
-              startRide(paths, stepDuration, STATION_STOP_DURATION);
+              startRide({ paths, stepDuration, STATION_STOP_DURATION });
             }}
           />
           <Button
@@ -131,6 +142,8 @@ const mapDispatchToProps = (dispatch) => {
     setBookingsAction: (data) => dispatch(setBookings(data)),
     updateMarkerLocationAction: ({ lat, lng }) =>
       dispatch(updateMarkerLocation({ lat, lng })),
+    updateMarkerPositionsAction: ({ x, y }) =>
+      dispatch(updateMarkerPosition({ x, y })),
     setTripTimeAction: (time) => dispatch(setTripTime(time)),
   };
 };

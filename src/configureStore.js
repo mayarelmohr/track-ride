@@ -14,6 +14,7 @@ const SetTransform = createTransform(
     return {
       ...outboundState,
       stations: new OrderedMap(outboundState.stations),
+      currentLocation: {},
     };
   },
   { whitelist: ["trip"] }
