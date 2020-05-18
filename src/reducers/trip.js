@@ -8,7 +8,7 @@ const initialState = {
   directions: {},
   currentLocation: {},
   currentStation: "",
-  isReady: false,
+  isDataReady: false,
 };
 
 export const setStations = createAction("Stations: set stations");
@@ -56,6 +56,7 @@ export default createReducer(
         ...state,
         stations,
         currentStation: stationsKeys[0],
+        isDataReady: true,
       };
     },
     [generateBooking]: (state, data) => {

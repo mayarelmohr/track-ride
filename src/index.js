@@ -10,7 +10,7 @@ import * as serviceWorker from "./serviceWorker";
 ReactDOM.render(
   <React.StrictMode>
     <Provider store={store}>
-      <PersistGate loading={null} persistor={persistor}>
+      <PersistGate loading={<p>Loading</p>} persistor={persistor}>
         <App />
       </PersistGate>
     </Provider>
