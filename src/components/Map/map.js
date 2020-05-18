@@ -15,7 +15,6 @@ import {
   getStartPoint,
   getEndPoint,
   getStationsBetweenStartAndEnd,
-  getStationsPath,
 } from "../../selectors/stations";
 
 import { setDirections, updateMarkerLocation } from "../../reducers/trip";
@@ -115,7 +114,6 @@ const mapStateToProps = (state) => {
   const startPoint = getStartPoint(stations);
   const endPoint = getEndPoint(stations);
   const middleStations = getStationsBetweenStartAndEnd(stations);
-  const path = getStationsPath(directions);
   const currentStationPosition = stations.get(currentStation);
   return {
     currentStationPosition,
@@ -125,7 +123,6 @@ const mapStateToProps = (state) => {
     middleStations,
     directions,
     currentLocation,
-    path,
   };
 };
 

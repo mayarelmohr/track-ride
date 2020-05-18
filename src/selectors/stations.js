@@ -20,14 +20,28 @@ export const getStationsPath = (directions) => {
     return [];
   }
   const { legs } = directions.routes[0];
-  return legs.reduce((acc, val) => {
-    let pathPerStop = [];
+  const mappedPath = legs.reduce((acc, val) => {
+    const pathPerStop = [];
     val.steps.forEach((step) => {
-      pathPerStop.push(step.path);
+      const updatedPath = step.path.map((point) => {
+        const { lat, lng } = point;
+        if (typeof lat === "function") {
+          return {
+            lat: lat(),
+            lng: lng(),
+          };
+        }
+        return {
+          lat,
+          lng,
+        };
+      });
+      pathPerStop.push(updatedPath);
     });
     acc.push(pathPerStop.flat());
     return acc;
   }, []);
+  return mappedPath;
 };
 
 export const getPathsCount = (paths) => {

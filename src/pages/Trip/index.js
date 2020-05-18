@@ -46,6 +46,7 @@ const Trip = (props) => {
     stepDuration,
     tripState,
     markerPosition,
+    isDataReady,
   } = props;
 
   useEffect(() => {
@@ -58,7 +59,7 @@ const Trip = (props) => {
         startPosY: markerPosition.y,
       });
     }
-    if (!props.isDataReady) {
+    if (!isDataReady) {
       readCSV();
       setLoading(false);
     } else {
@@ -151,6 +152,7 @@ const mapStateToProps = (state) => {
     tripTime,
     tripState,
     markerPosition,
+    isDataReady,
   } = state.trip;
   let { stations } = state.trip;
   const paths = getStationsPath(directions);
@@ -158,11 +160,12 @@ const mapStateToProps = (state) => {
   const stepDuration = calculateStopDurationPerStepInPath(
     stations,
     paths,
-    TRIP_TIME,
+    tripTime,
     STATION_STOP_DURATION
   );
   const { bookings } = stations.get(currentStation) || [];
   return {
+    isDataReady,
     markerPosition,
     distance,
     stepDuration,
