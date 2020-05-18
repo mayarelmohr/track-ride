@@ -37,9 +37,6 @@ export default createReducer(
   {
     [setStations]: (state, routes) => {
       let { stations } = state;
-      if (!OrderedMap.isOrderedMap(stations)) {
-        stations = new OrderedMap(stations);
-      }
       routes.map((route) => {
         const id = route["station_id"];
         stations = stations.set(id, {
