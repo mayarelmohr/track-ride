@@ -10,6 +10,7 @@ import {
   updateMarkerLocation,
   updateMarkerPosition,
   setTripState,
+  updateBookings,
   setBookings,
   setTripTime,
 } from "../../reducers/trip";
@@ -84,6 +85,7 @@ const Trip = (props) => {
   }) => {
     for (let i = startPosX; i < paths.length; i++) {
       let path = paths[i];
+      props.updateBookingsAction(i);
       for (let j = startPosY; j < path.length; j++) {
         let step = path[j];
         await delay(stepDuration);
@@ -92,8 +94,8 @@ const Trip = (props) => {
           y: j,
         });
         props.updateMarkerLocationAction({
-          lat: step.lat || step.lat(),
-          lng: step.lng || step.lng(),
+          lat: step.lat,
+          lng: step.lng,
         });
       }
       await delay(stationDuration);
@@ -180,6 +182,7 @@ const mapDispatchToProps = (dispatch) => {
   return {
     setStationsAction: (data) => dispatch(setStations(data)),
     setBookingsAction: (data) => dispatch(setBookings(data)),
+    updateBookingsAction: (index) => dispatch(updateBookings(index)),
     updateMarkerLocationAction: ({ lat, lng }) =>
       dispatch(updateMarkerLocation({ lat, lng })),
     updateMarkerPositionsAction: ({ x, y }) =>

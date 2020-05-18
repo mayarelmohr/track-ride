@@ -1,6 +1,9 @@
 import { createAction, createReducer } from "redux-act";
 import { OrderedMap } from "immutable";
-import generateBookingData from "../helpers/generateBooking";
+import {
+  generateBookingStatus,
+  generateUserData,
+} from "../helpers/generateBooking";
 import { getStationsPath } from "../selectors/stations";
 import { TIME_SHIFT, TRIP_STATE } from "../helpers/constants";
 
@@ -18,6 +21,7 @@ const initialState = {
 
 export const setStations = createAction("Stations: set stations");
 export const setBookings = createAction("Bookings: set bookings");
+export const updateBookings = createAction("Station: update Bookings");
 export const generateBooking = createAction("Bookings: generate booking");
 export const setDirections = createAction("Directions: set Directions");
 export const updateMarkerLocation = createAction(
@@ -68,6 +72,24 @@ export default createReducer(
         isDataReady: true,
       };
     },
+    [updateBookings]: (state, index) => {
+      let { stations } = state;
+      let currentStation = stations.toArray()[index];
+      let id = currentStation[0];
+      let stationData = stations.get(id);
+      let updatedBooking = generateBookingStatus(stationData.bookings);
+      stations = stations.set(id, {
+        ...stationData,
+        ...{ bookings: updatedBooking },
+      });
+
+      return {
+        ...state,
+        stations,
+        currentStation: id,
+        currentStationPosition: stationData,
+      };
+    },
     [generateBooking]: (state, data) => {
       let { stations } = state;
       const { station: stationId } = data;
@@ -75,7 +97,7 @@ export default createReducer(
       const userId =
         Math.floor(Math.random() * 10000) +
         100; /** Added 100 to avoid duplicating ids from csv */
-      const generatedData = generateBookingData(userId);
+      const generatedData = generateUserData(userId);
       stationData.bookings.push({ ...data, ...generatedData });
       stations = stations.set(stationId, stationData);
       return {
