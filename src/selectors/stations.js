@@ -16,8 +16,8 @@ export const getStationsBetweenStartAndEnd = (stations) => {
 };
 
 export const getStationsPath = (directions) => {
-  if (!directions.routes) {
-    return [];
+  if (!directions) {
+    return [[]];
   }
   const { legs } = directions.routes[0];
   return legs.reduce((acc, val) => {
@@ -38,7 +38,7 @@ export const getPathsCount = (paths) => {
 };
 
 export const getDistance = (directions) => {
-  if (!directions.routes) {
+  if (!directions) {
     return [];
   }
   const { legs } = directions.routes[0];

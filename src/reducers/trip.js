@@ -1,24 +1,28 @@
 import { createAction, createReducer } from "redux-act";
 import { OrderedMap } from "immutable";
 import generateBookingData from "../helpers/generateBooking";
-import { TIME_SHIFT } from "../helpers/constants";
+import { TIME_SHIFT, TRIP_STATE } from "../helpers/constants";
 
 const initialState = {
   stations: new OrderedMap(),
-  directions: {},
-  currentLocation: {},
+  directions: null,
+  currentMarkerPosition: null,
   currentStation: "",
-  isReady: false,
+  isMapReady: false,
+  isDataReady: false,
+  tripState: TRIP_STATE.IDLE,
 };
 
 export const setStations = createAction("Stations: set stations");
 export const setBookings = createAction("Bookings: set bookings");
 export const generateBooking = createAction("Bookings: generate booking");
 export const setDirections = createAction("Directions: set Directions");
-export const updateMarkerLocation = createAction(
+export const updateMarkerPosition = createAction(
   "Location: update current location"
 );
 export const setTripTime = createAction("Time: set trip time");
+
+export const setTripState = createAction("Trip: set current state");
 
 export default createReducer(
   {
@@ -56,6 +60,7 @@ export default createReducer(
         ...state,
         stations,
         currentStation: stationsKeys[0],
+        isDataReady: true,
       };
     },
     [generateBooking]: (state, data) => {
@@ -80,18 +85,24 @@ export default createReducer(
       return {
         ...state,
         directions,
-        isReady: true,
+        isMapReady: true,
       };
     },
-    [updateMarkerLocation]: (state, location) => ({
+    [updateMarkerPosition]: (state, location) => ({
       ...state,
-      currentLocation: location,
+      currentMarkerPosition: { lat: location.lat, lng: location.lng },
     }),
     [setTripTime]: (state, time) => {
       const timeIndex = Math.floor(Math.random() * 3) + 1;
       return {
         ...state,
         tripTime: time + TIME_SHIFT[timeIndex - 1],
+      };
+    },
+    [setTripState]: (state, newState) => {
+      return {
+        ...state,
+        tripState: newState,
       };
     },
   },

@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import {
   withScriptjs,
   withGoogleMap,
@@ -6,7 +6,7 @@ import {
   Marker,
   DirectionsRenderer,
 } from "react-google-maps";
-import { OrderedMap } from "immutable";
+import { OrderedMap, set } from "immutable";
 
 import { connect } from "react-redux";
 import MarkerInfo from "./markerInfo";
@@ -24,22 +24,21 @@ import mapStyles from "./mapStyles/map.json";
 
 var google;
 
-const MapElement = React.memo((props) => {
+const MapElement = (props) => {
   const {
     stations,
     startPoint,
     endPoint,
     middleStations,
-    path,
-    currentStationPosition,
+    currentMarkerPosition,
   } = props;
-  useEffect(() => {
-    google = window.google;
-    const { LatLng } = google.maps;
-    const DirectionsService = new google.maps.DirectionsService();
+  const [isLoadingDirections, setLoadingDirections] = useState(true);
+  const getDirections = () => {
+    const { LatLng } = window.google.maps;
+    const DirectionsService = new window.google.maps.DirectionsService();
     const wayPoints = middleStations.map((point) => {
       return {
-        location: new google.maps.LatLng(point.lat, point.lng),
+        location: new window.google.maps.LatLng(point.lat, point.lng),
         stopover: true,
       };
     });
@@ -54,14 +53,19 @@ const MapElement = React.memo((props) => {
         },
       },
       async (result, status) => {
-        if (status === google.maps.DirectionsStatus.OK) {
+        if (status === window.google.maps.DirectionsStatus.OK) {
           await props.setDirectionsAction(result);
+          debugger;
+          setLoadingDirections(false);
         } else {
           console.error(`error fetching directions ${result}`);
         }
       }
     );
-  }, [stations]);
+  };
+  useEffect(() => {
+    getDirections();
+  }, []);
 
   return (
     <GoogleMap
@@ -71,41 +75,51 @@ const MapElement = React.memo((props) => {
         styles: mapStyles,
         disableDefaultUI: true,
       }}
-      defaultCenter={
-        new window.google.maps.LatLng(
-          currentStationPosition.lat,
-          currentStationPosition.lng
-        )
-      }
+      // defaultCenter={
+      //   new window.google.maps.LatLng(
+      //     currentStationPosition.lat,
+      //     currentStationPosition.lng
+      //   )
+      // }
     >
-      <DirectionsRenderer
-        options={{
-          polylineOptions: { strokeColor: "#FD376B" },
-          markerOptions: {
-            visible: false,
-          },
-        }}
-        directions={props.directions}
-      />
+      {!isLoadingDirections ? (
+        <DirectionsRenderer
+          options={{
+            polylineOptions: { strokeColor: "#FD376B" },
+            markerOptions: {
+              visible: false,
+            },
+          }}
+          directions={props.directions}
+        />
+      ) : null}
+
       {stations.map((station) => (
         <MarkerInfo
           station={station}
-          //large={station.id === startPoint.id || station.id === endPoint.id}
+          large={station.id === startPoint.id || station.id === endPoint.id}
         />
       ))}
-      <Marker
-        defaultIcon={"./images/car.svg"}
-        position={{
-          lat: props.currentLocation.lat,
-          lng: props.currentLocation.lng,
-        }}
-      />
+      {!isLoadingDirections ? (
+        <Marker
+          defaultIcon={"./images/car.svg"}
+          position={{
+            lat: currentMarkerPosition.lat,
+            lng: currentMarkerPosition.lng,
+          }}
+        />
+      ) : null}
     </GoogleMap>
   );
-});
+};
 
 const mapStateToProps = (state) => {
-  const { directions, currentLocation, currentStation } = state.trip;
+  const {
+    directions,
+    currentMarkerPosition,
+    currentStation,
+    isMapReady,
+  } = state.trip;
   let { stations } = state.trip;
   if (!OrderedMap.isOrderedMap(stations)) {
     stations = new OrderedMap(stations);
@@ -113,24 +127,23 @@ const mapStateToProps = (state) => {
   const startPoint = getStartPoint(stations);
   const endPoint = getEndPoint(stations);
   const middleStations = getStationsBetweenStartAndEnd(stations);
-  const path = getStationsPath(directions);
   const currentStationPosition = stations.get(currentStation);
+
+  debugger;
   return {
+    isMapReady,
     currentStationPosition,
+    currentMarkerPosition,
     stations,
     startPoint,
     endPoint,
     middleStations,
     directions,
-    currentLocation,
-    path,
   };
 };
 
 const mapDispatchToProps = (dispatch) => ({
   setDirectionsAction: (data) => dispatch(setDirections(data)),
-  updateMarkerLocationAction: ({ lat, lng }) =>
-    dispatch(updateMarkerLocation({ lat, lng })),
 });
 
 export default connect(
