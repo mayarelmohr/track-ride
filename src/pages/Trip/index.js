@@ -1,10 +1,10 @@
-import React, { useEffect, useState } from "./node_modules/react";
+import React, { useEffect, useState } from "react";
 import GoogleMap from "../../components/Map";
-import { connect } from "./node_modules/react-redux";
+import { connect } from "react-redux";
 import AddPassengerFrom from "../../components/AddPassengerForm";
 import Bookings from "../../components/Bookings";
 import TripInformation from "../../components/TripInformation";
-import { csv } from "./node_modules/d3";
+import { csv } from "d3";
 import {
   setStations,
   updateMarkerLocation,
