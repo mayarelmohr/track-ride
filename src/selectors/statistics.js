@@ -46,5 +46,4 @@ export const getBookingsCountPerStation = (stations) => {
     acc.push(station.bookings.length);
     return acc;
   }, []);
-  debugger;
 };

@@ -43,7 +43,6 @@ const mapStateToProps = (state) => {
   const { stations } = state.trip;
   const bookingsCountPerStation = getBookingsCountPerStation(stations);
   const stationNames = getStationNames(stations);
-  debugger;
   return { stationNames, bookingsCountPerStation };
 };
 
