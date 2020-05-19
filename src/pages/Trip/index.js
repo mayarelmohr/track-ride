@@ -33,6 +33,7 @@ const Trip = (props) => {
   const [isLoading, setLoading] = useState(true);
   const [isBookRideFormVisible, setBookRideFormVisibility] = useState(false);
   const requestRefAnimationRef = React.useRef();
+  const delayRef = React.useRef();
   const readCSV = async () => {
     const stationsData = await csv("./data/route.csv");
     props.setStationsAction(stationsData);
@@ -53,7 +54,7 @@ const Trip = (props) => {
 
   useEffect(() => {
     if (tripState === TRIP_STATE.TRACKING) {
-      window.cancelAnimationFrame(requestRefAnimationRef);
+      window.cancelAnimationFrame(requestRefAnimationRef.current);
       startRide({
         paths,
         stepDuration,
@@ -68,6 +69,9 @@ const Trip = (props) => {
     } else {
       setLoading(false);
     }
+    return () => {
+      clearTimeout(delayRef.current);
+    };
   }, []);
 
   const startRide = (rideInfo) => {
@@ -90,7 +94,7 @@ const Trip = (props) => {
       props.updateBookingsAction(i);
       for (let j = startPosY; j < path.length; j++) {
         let step = path[j];
-        await delay(stepDuration);
+        await delay(delayRef, stepDuration);
         props.updateMarkerPositionsAction({
           x: i,
           y: j,
@@ -100,7 +104,7 @@ const Trip = (props) => {
           lng: step.lng,
         });
       }
-      await delay(stationDuration);
+      await delay(delayRef, stationDuration);
     }
     props.setTripStateAction(TRIP_STATE.FINISHED);
     props.history.push("/statistics");
@@ -158,6 +162,7 @@ const Trip = (props) => {
             type="button"
             disabled={tripState === TRIP_STATE.TRACKING}
             action={() => {
+              props.updateMarkerLocationAction({});
               props.setTripStateAction(TRIP_STATE.IDLE);
             }}
           />

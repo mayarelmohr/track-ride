@@ -4,11 +4,12 @@ export const BOOKING = {
   OUT: "out",
 };
 export const BOOK_LIMIT = 12;
-export const TRIP_TIME = 120000;
+
+export const TRIP_TIME = 90000;
 
 export const TIME_SHIFT = [-30000, 0, 30000];
 
-export const STATION_STOP_DURATION = 2000; // stops at each station for 2 seconds
+export const STATION_STOP_DURATION = 500; // stops at each station for 0.5 seconds
 
 export const TRIP_STATE = {
   IDLE: "idle",
