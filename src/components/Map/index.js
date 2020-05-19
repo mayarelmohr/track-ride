@@ -1,6 +1,5 @@
 import React from "react";
 import Map from "./map";
-import styles from "./styles.module.css";
 
 const MapContainer = React.memo(() => (
   <Map

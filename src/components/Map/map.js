@@ -15,7 +15,6 @@ import {
   getStartPoint,
   getEndPoint,
   getStationsBetweenStartAndEnd,
-  getStationsPath,
 } from "../../selectors/stations";
 
 import { setDirections, updateMarkerLocation } from "../../reducers/trip";
@@ -30,10 +29,9 @@ const MapElement = React.memo((props) => {
     startPoint,
     endPoint,
     middleStations,
-    path,
     currentStationPosition,
   } = props;
-  useEffect(() => {
+  const getDirections = () => {
     google = window.google;
     const { LatLng } = google.maps;
     const DirectionsService = new google.maps.DirectionsService();
@@ -61,7 +59,10 @@ const MapElement = React.memo((props) => {
         }
       }
     );
-  }, [stations]);
+  };
+  useEffect(() => {
+    getDirections();
+  }, []);
 
   return (
     <GoogleMap
@@ -90,7 +91,7 @@ const MapElement = React.memo((props) => {
       {stations.map((station) => (
         <MarkerInfo
           station={station}
-          //large={station.id === startPoint.id || station.id === endPoint.id}
+          large={station.id === startPoint.id || station.id === endPoint.id}
         />
       ))}
       <Marker
@@ -113,7 +114,6 @@ const mapStateToProps = (state) => {
   const startPoint = getStartPoint(stations);
   const endPoint = getEndPoint(stations);
   const middleStations = getStationsBetweenStartAndEnd(stations);
-  const path = getStationsPath(directions);
   const currentStationPosition = stations.get(currentStation);
   return {
     currentStationPosition,
@@ -123,7 +123,6 @@ const mapStateToProps = (state) => {
     middleStations,
     directions,
     currentLocation,
-    path,
   };
 };
 

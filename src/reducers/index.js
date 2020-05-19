@@ -1,12 +1,14 @@
 import { combineReducers } from "redux";
 import trip from "./trip";
 
+export const initialState = {
+  trip: {},
+};
+
 const allReducers = combineReducers({
   trip,
 });
 
-const rootReducer = (state, action) => {
+export const rootReducer = (state, action) => {
   return allReducers(state, action);
 };
-
-export default rootReducer;

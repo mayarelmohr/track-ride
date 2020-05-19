@@ -1,23 +1,23 @@
+.container {
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 30px 10px;
+}
+.section {
+  text-align: center;
+  margin-bottom: 70px;
+}
+
 .button {
+  display: inline-block;
+  text-decoration-line: none;
   padding: 10px 20px;
   background-color: #000;
   color: #fff;
   font-weight: bold;
-  box-shadow: none;
   margin: 0;
   border: solid 1px #000;
   border-radius: 20px;
   font-size: 14px;
   text-transform: uppercase;
-}
-
-.button:hover,
-.button:disabled {
-  background-color: #fff;
-  color: #000;
-  cursor: pointer;
-}
-
-.button:focus {
-  outline: none;
 }

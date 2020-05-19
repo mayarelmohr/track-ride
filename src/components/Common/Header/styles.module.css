@@ -1,0 +1,28 @@
+.hidden {
+  border: 0;
+  clip: rect(0 0 0 0);
+  height: 1px;
+  margin: -1px;
+  overflow: hidden;
+  padding: 0;
+  position: absolute;
+  width: 1px;
+}
+
+.logo {
+  width: 90px;
+  vertical-align: middle;
+}
+
+.header {
+  padding: 10px 30px;
+  height: 60px;
+  line-height: 60px;
+  box-shadow: 7px 7px 8px -8px #b4b4b4;
+  position: relative;
+  z-index: 1;
+}
+
+.wrapper {
+  margin: 0;
+}

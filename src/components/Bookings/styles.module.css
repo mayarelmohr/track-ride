@@ -21,6 +21,7 @@
 
 .user {
   display: flex;
+  width: 200px;
 }
 
 .list {
