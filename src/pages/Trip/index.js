@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
-import GoogleMap from "../../components/Map";
 import { connect } from "react-redux";
+import { withRouter } from "react-router-dom";
+import GoogleMap from "../../components/Map";
 import AddPassengerFrom from "../../components/AddPassengerForm";
 import Bookings from "../../components/Bookings";
 import TripInformation from "../../components/TripInformation";
@@ -52,6 +53,7 @@ const Trip = (props) => {
 
   useEffect(() => {
     if (tripState === TRIP_STATE.TRACKING) {
+      window.cancelAnimationFrame(requestRefAnimationRef);
       startRide({
         paths,
         stepDuration,
@@ -101,6 +103,7 @@ const Trip = (props) => {
       await delay(stationDuration);
     }
     props.setTripStateAction(TRIP_STATE.FINISHED);
+    props.history.push("/statistics");
     window.cancelAnimationFrame(requestRefAnimationRef);
   };
   if (isLoading) {
@@ -141,6 +144,21 @@ const Trip = (props) => {
           isModalVisible={isBookRideFormVisible}
           closeModal={() => setBookRideFormVisibility(false)}
           contentLabel="Add credit card"
+        />
+        <Button
+          text="Replay ride"
+          type="button"
+          disabled={tripState === TRIP_STATE.TRACKING}
+          action={() => {
+            props.setTripStateAction(TRIP_STATE.TRACKING);
+            startRide({
+              paths,
+              stepDuration,
+              stationDuration: STATION_STOP_DURATION,
+              startPosX: 0,
+              startPosY: 0,
+            });
+          }}
         />
       </div>
     </div>
@@ -192,4 +210,4 @@ const mapDispatchToProps = (dispatch) => {
   };
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(Trip);
+export default withRouter(connect(mapStateToProps, mapDispatchToProps)(Trip));

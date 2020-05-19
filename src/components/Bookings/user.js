@@ -6,14 +6,14 @@ const User = React.memo(({ booking }) => {
   const { name, picture, station, payment, status } = booking;
   const getBookingStatus = (status) => {
     switch (status) {
-      case "in":
-        return BOOKING.IN;
-      case "out":
-        return BOOKING.OUT;
-      case "missed":
-        return BOOKING.MISSED;
+      case BOOKING.IN:
+        return "checked in";
+      case BOOKING.OUT:
+        return "checked out";
+      case BOOKING.MISSED:
+        return "missed";
       default:
-        return BOOKING.IN;
+        return "checked in";
     }
   };
   return (

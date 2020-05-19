@@ -1,7 +1,7 @@
 export const BOOKING = {
-  IN: "checked in",
+  IN: "in",
   MISSED: "missed",
-  OUT: "checked out",
+  OUT: "out",
 };
 export const BOOK_LIMIT = 12;
 export const TRIP_TIME = 120000;

@@ -1,6 +1,7 @@
 import React from "react";
 import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
 import Trip from "./pages/Trip";
+import Statistics from "./pages/Statistics";
 import Header from "./components/Common/Header";
 export default function App() {
   return (
@@ -12,7 +13,7 @@ export default function App() {
             <Trip />
           </Route>
           <Route path="/statistics">
-            <p>Statistics</p>
+            <Statistics />
           </Route>
           <Route path="/">
             <Trip />
