@@ -107,7 +107,14 @@ const Trip = (props) => {
     window.cancelAnimationFrame(requestRefAnimationRef);
   };
   if (isLoading) {
-    return "Loading";
+    return (
+      <p>
+        <span role="img" aria-labelledby="loading">
+          ⏳
+        </span>
+        Loading
+      </p>
+    );
   }
   return (
     <div>
@@ -145,21 +152,16 @@ const Trip = (props) => {
           closeModal={() => setBookRideFormVisibility(false)}
           contentLabel="Add credit card"
         />
-        <Button
-          text="Replay ride"
-          type="button"
-          disabled={tripState === TRIP_STATE.TRACKING}
-          action={() => {
-            props.setTripStateAction(TRIP_STATE.TRACKING);
-            startRide({
-              paths,
-              stepDuration,
-              stationDuration: STATION_STOP_DURATION,
-              startPosX: 0,
-              startPosY: 0,
-            });
-          }}
-        />
+        <p>
+          <Button
+            text="Reset ride"
+            type="button"
+            disabled={tripState === TRIP_STATE.TRACKING}
+            action={() => {
+              props.setTripStateAction(TRIP_STATE.IDLE);
+            }}
+          />
+        </p>
       </div>
     </div>
   );
