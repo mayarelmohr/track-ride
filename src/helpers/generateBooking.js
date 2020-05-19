@@ -9,7 +9,7 @@ export const generateUserData = (userId) => {
 export const generateBookingStatus = (bookings) => {
   const randomBookings = [BOOKING.IN, BOOKING.MISSED, BOOKING.OUT];
   const newBookings = bookings.map((user) => {
-    const newBookingStatusIndex = Math.floor(Math.random() * 2) + 1;
+    const newBookingStatusIndex = Math.floor(Math.random() * 3) + 1;
     user.status = randomBookings[newBookingStatusIndex - 1];
     return user;
   });

@@ -15,3 +15,8 @@ export const TRIP_STATE = {
   TRACKING: "tracking",
   FINISHED: "finished",
 };
+
+export const PAYMENT_METHOD = {
+  CREDIT: "credit",
+  CASH: "cash",
+};

@@ -9,7 +9,7 @@ export default function App() {
       <div>
         <Header />
         <Switch>
-          <Route path="/trip/:topicId">
+          <Route path="/trip">
             <Trip />
           </Route>
           <Route path="/statistics">
