@@ -8,7 +8,7 @@ const Bookings = ({ bookingsList }) => {
       <h2>Bookings</h2>
       <ul className={styles.list}>
         {bookingsList.map((booking) => (
-          <li>
+          <li key={booking.id}>
             <User booking={booking} />
           </li>
         ))}

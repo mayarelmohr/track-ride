@@ -6,7 +6,6 @@ import {
   Marker,
   DirectionsRenderer,
 } from "react-google-maps";
-import { OrderedMap } from "immutable";
 
 import { connect } from "react-redux";
 import MarkerInfo from "./markerInfo";
@@ -21,8 +20,6 @@ import { setDirections, updateMarkerLocation } from "../../reducers/trip";
 
 import mapStyles from "./mapStyles/map.json";
 
-var google;
-
 const MapElement = React.memo((props) => {
   const {
     stations,
@@ -32,7 +29,7 @@ const MapElement = React.memo((props) => {
     currentStationPosition,
   } = props;
   const getDirections = () => {
-    google = window.google;
+    const { google } = window;
     const { LatLng } = google.maps;
     const DirectionsService = new google.maps.DirectionsService();
     const wayPoints = middleStations.map((point) => {
@@ -108,9 +105,6 @@ const MapElement = React.memo((props) => {
 const mapStateToProps = (state) => {
   const { directions, currentLocation, currentStation } = state.trip;
   let { stations } = state.trip;
-  if (!OrderedMap.isOrderedMap(stations)) {
-    stations = new OrderedMap(stations);
-  }
   const startPoint = getStartPoint(stations);
   const endPoint = getEndPoint(stations);
   const middleStations = getStationsBetweenStartAndEnd(stations);
