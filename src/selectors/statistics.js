@@ -7,7 +7,6 @@ export const getBookingStatus = (stations) => {
     const { bookings } = station;
     return bookings.forEach((booking) => {
       const { status } = booking;
-      console.log(status);
       bookingData[status]++;
     });
   });
@@ -37,7 +36,6 @@ export const getPaymentInfoPerStation = (stations) => {
 
 export const getStationNames = (stations) => {
   return stations.reduce((acc, station) => {
-    console.log(acc);
     acc.push(station.name);
     return acc;
   }, []);
@@ -48,4 +46,5 @@ export const getBookingsCountPerStation = (stations) => {
     acc.push(station.bookings.length);
     return acc;
   }, []);
+  debugger;
 };

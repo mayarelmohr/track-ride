@@ -12,7 +12,7 @@ const NumberOfBookingBarChart = ({ stationNames, bookingsCountPerStation }) => {
     labels: stationNames,
     datasets: [
       {
-        label: "Booking Status",
+        label: "Number of Bookings",
         data: bookingsCountPerStation,
         backgroundColor: "rgba(75, 192, 192, 1)",
         borderColor: "rgba(75, 192, 192, 1)",
@@ -24,7 +24,9 @@ const NumberOfBookingBarChart = ({ stationNames, bookingsCountPerStation }) => {
     scales: {
       yAxes: [
         {
-          display: false,
+          ticks: {
+            beginAtZero: true,
+          },
         },
       ],
     },
@@ -41,6 +43,7 @@ const mapStateToProps = (state) => {
   const { stations } = state.trip;
   const bookingsCountPerStation = getBookingsCountPerStation(stations);
   const stationNames = getStationNames(stations);
+  debugger;
   return { stationNames, bookingsCountPerStation };
 };
 
