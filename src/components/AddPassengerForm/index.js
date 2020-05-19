@@ -18,7 +18,6 @@ const AddPassengerToStationForm = (props) => {
   const [errors, setErrors] = useState({});
 
   const handleChange = (event) => {
-    event.preventDefault();
     const { target } = event;
     const { name, value } = target;
     if (value && errors[name]) {
