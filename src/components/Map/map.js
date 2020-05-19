@@ -114,7 +114,7 @@ const mapStateToProps = (state) => {
   const startPoint = getStartPoint(stations);
   const endPoint = getEndPoint(stations);
   const middleStations = getStationsBetweenStartAndEnd(stations);
-  const currentStationPosition = stations.get(currentStation);
+  const currentStationPosition = stations.get(currentStation) || {};
   return {
     currentStationPosition,
     stations,
