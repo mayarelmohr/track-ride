@@ -8,32 +8,29 @@ import TripInformation from "../../components/TripInformation";
 import { csv } from "d3";
 import {
   setStations,
-  updateMarkerLocation,
-  updateMarkerPosition,
+  setTripStartTime,
   setTripState,
   updateBookings,
+  updateCurrentStation,
   setBookings,
   setTripTime,
 } from "../../reducers/trip";
 import Button from "../../components/Common/Button";
+import Loading from "../../components/Common/Loading";
 import {
-  getStationsPath,
+  mapDirectionsToPath,
   getDistance,
-  calculateStopDurationPerStepInPath,
+  getStartPoint,
 } from "../../selectors/stations";
 import styles from "./styles.module.css";
-import delay from "../../helpers/delay";
-import {
-  TRIP_TIME,
-  STATION_STOP_DURATION,
-  TRIP_STATE,
-} from "../../helpers/constants";
+import { TRIP_TIME, TRIP_STATE } from "../../helpers/constants";
 
 const Trip = (props) => {
   const [isLoading, setLoading] = useState(true);
   const [isBookRideFormVisible, setBookRideFormVisibility] = useState(false);
-  const requestRefAnimationRef = React.useRef();
-  const delayRef = React.useRef();
+  const [markerLocation, setMarkerLocation] = useState({ lat: 0, lng: 0 });
+  const requestAnimationFrameRef = React.useRef();
+  const rideTimeoutRef = React.useRef();
   const readCSV = async () => {
     const stationsData = await csv("./data/route.csv");
     props.setStationsAction(stationsData);
@@ -46,22 +43,16 @@ const Trip = (props) => {
     distance,
     tripTime,
     paths,
-    stepDuration,
+    startTime,
     tripState,
-    markerPosition,
     isDataReady,
   } = props;
 
   useEffect(() => {
     if (tripState === TRIP_STATE.TRACKING) {
-      window.cancelAnimationFrame(requestRefAnimationRef.current);
-      startRide({
-        paths,
-        stepDuration,
-        stationDuration: STATION_STOP_DURATION,
-        startPosX: markerPosition.x,
-        startPosY: markerPosition.y,
-      });
+      rideTimeoutRef.current = setTimeout(() => {
+        startRide(paths, TRIP_TIME, startTime);
+      }, 300);
     }
     if (!isDataReady) {
       readCSV();
@@ -70,74 +61,54 @@ const Trip = (props) => {
       setLoading(false);
     }
     return () => {
-      clearTimeout(delayRef.current);
+      cancelAnimationFrame(requestAnimationFrameRef.current);
+      clearTimeout(rideTimeoutRef.current);
     };
   }, []);
 
-  const startRide = (rideInfo) => {
-    if (!requestRefAnimationRef.current) {
-      requestRefAnimationRef.current = window.requestAnimationFrame(() => {
-        updateLocation(rideInfo);
-      });
-    }
+  const startRide = (paths, duration, start) => {
+    const move = () => {
+      const currentTime = Date.now();
+      /* calculates time elapsed time since the last requested frame */
+      const elapsedTime = currentTime - start;
+      /* calculates the expected distance that car should have moved during this elapsed time */
+      const progress = elapsedTime / duration;
+      /* the next lat and lng based on the car should have made */
+      const nextLatLngIndex = Math.floor(progress * paths.length);
+      if (elapsedTime < duration && nextLatLngIndex < paths.length) {
+        const currentStopPoint = paths[nextLatLngIndex];
+        const { lat, lng, stationIndex } = currentStopPoint;
+        setMarkerLocation({ lat, lng });
+        props.updateCurrentStationAction(stationIndex);
+
+        requestAnimationFrameRef.current = requestAnimationFrame(move);
+      } else {
+        cancelAnimationFrame(requestAnimationFrameRef.current);
+        props.setTripStateAction(TRIP_STATE.FINISHED);
+        props.history.push("/statistics");
+      }
+    };
+    requestAnimationFrameRef.current = requestAnimationFrame(move);
   };
 
-  const updateLocation = async ({
-    paths,
-    stepDuration,
-    stationDuration,
-    startPosX = 0,
-    startPosY = 0,
-  }) => {
-    for (let i = startPosX; i < paths.length; i++) {
-      let path = paths[i];
-      props.updateBookingsAction(i);
-      for (let j = startPosY; j < path.length; j++) {
-        let step = path[j];
-        await delay(delayRef, stepDuration);
-        props.updateMarkerPositionsAction({
-          x: i,
-          y: j,
-        });
-        props.updateMarkerLocationAction({
-          lat: step.lat,
-          lng: step.lng,
-        });
-      }
-      await delay(delayRef, stationDuration);
-    }
-    props.setTripStateAction(TRIP_STATE.FINISHED);
-    props.history.push("/statistics");
-    window.cancelAnimationFrame(requestRefAnimationRef);
-  };
   if (isLoading) {
-    return (
-      <p>
-        <span role="img" aria-labelledby="loading">
-          ⏳
-        </span>
-        Loading
-      </p>
-    );
+    return <Loading />;
   }
   return (
     <div>
-      <GoogleMap />
+      <GoogleMap markerLocation={markerLocation} />
       <div className={styles.container}>
         <div className={styles.buttons}>
           <Button
             text="Start ride"
             type="button"
-            disabled={tripState !== TRIP_STATE.IDLE}
+            disabled={tripState === TRIP_STATE.TRACKING}
             action={() => {
               props.setTripStateAction(TRIP_STATE.TRACKING);
-              startRide({
-                paths,
-                stepDuration,
-                stationDuration: STATION_STOP_DURATION,
-                startPosX: 0,
-                startPosY: 0,
-              });
+              const flatPaths = paths.flat();
+              const start = Date.now();
+              props.setTripStartTimeAction(start);
+              startRide(flatPaths, TRIP_TIME, start);
             }}
           />
           <Button
@@ -156,46 +127,23 @@ const Trip = (props) => {
           closeModal={() => setBookRideFormVisibility(false)}
           contentLabel="Add credit card"
         />
-        <p>
-          <Button
-            text="Reset ride"
-            type="button"
-            disabled={tripState === TRIP_STATE.TRACKING}
-            action={() => {
-              props.updateMarkerLocationAction({});
-              props.setTripStateAction(TRIP_STATE.IDLE);
-            }}
-          />
-        </p>
       </div>
     </div>
   );
 };
 
 const mapStateToProps = (state) => {
-  const {
-    directions,
-    currentStation,
-    tripTime,
-    tripState,
-    markerPosition,
-    isDataReady,
-  } = state.trip;
-  let { stations } = state.trip;
-  const paths = getStationsPath(directions);
+  const { directions, tripTime, tripState, isDataReady } = state.trip;
+  let { stations, startTime, currentStation } = state.trip;
+  currentStation = currentStation || getStartPoint(stations);
+  const paths = mapDirectionsToPath(directions);
   const distance = getDistance(directions);
-  const stepDuration = calculateStopDurationPerStepInPath(
-    stations,
-    paths,
-    tripTime,
-    STATION_STOP_DURATION
-  );
-  const { bookings } = stations.get(currentStation) || [];
+  const { bookings } = currentStation;
+  startTime = Number(startTime);
   return {
+    startTime,
     isDataReady,
-    markerPosition,
     distance,
-    stepDuration,
     tripTime,
     tripState,
     paths,
@@ -208,12 +156,11 @@ const mapDispatchToProps = (dispatch) => {
     setStationsAction: (data) => dispatch(setStations(data)),
     setBookingsAction: (data) => dispatch(setBookings(data)),
     updateBookingsAction: (index) => dispatch(updateBookings(index)),
-    updateMarkerLocationAction: ({ lat, lng }) =>
-      dispatch(updateMarkerLocation({ lat, lng })),
-    updateMarkerPositionsAction: ({ x, y }) =>
-      dispatch(updateMarkerPosition({ x, y })),
     setTripTimeAction: (time) => dispatch(setTripTime(time)),
     setTripStateAction: (state) => dispatch(setTripState(state)),
+    setTripStartTimeAction: (time) => dispatch(setTripStartTime(time)),
+    updateCurrentStationAction: (index) =>
+      dispatch(updateCurrentStation(index)),
   };
 };
 

@@ -18,7 +18,7 @@ export const getPaymentInfoPerStation = (stations) => {
     [PAYMENT_METHOD.CREDIT]: [],
     [PAYMENT_METHOD.CASH]: [],
   };
-  stations.map((station) => {
+  stations.forEach((station) => {
     let cashPerStation = 0;
     let creditPerStation = 0;
     station.bookings.forEach((booking) => {

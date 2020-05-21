@@ -16,17 +16,19 @@ import {
   getStationsBetweenStartAndEnd,
 } from "../../selectors/stations";
 
-import { setDirections, updateMarkerLocation } from "../../reducers/trip";
+import { setDirections } from "../../reducers/trip";
 
 import mapStyles from "./mapStyles/map.json";
 
-const MapElement = React.memo((props) => {
+const MapElement = (props) => {
   const {
     stations,
     startPoint,
     endPoint,
     middleStations,
     currentStationPosition,
+    currentLocation,
+    directions,
   } = props;
   const getDirections = () => {
     const { google } = window;
@@ -60,7 +62,6 @@ const MapElement = React.memo((props) => {
   useEffect(() => {
     getDirections();
   }, []);
-
   return (
     <GoogleMap
       defaultZoom={7.5}
@@ -83,27 +84,29 @@ const MapElement = React.memo((props) => {
             visible: false,
           },
         }}
-        directions={props.directions}
+        directions={directions}
       />
       {stations.map((station) => (
         <MarkerInfo
           station={station}
+          key={station.id}
           large={station.id === startPoint.id || station.id === endPoint.id}
         />
       ))}
+
       <Marker
         defaultIcon={"./images/car.svg"}
         position={{
-          lat: props.currentLocation.lat,
-          lng: props.currentLocation.lng,
+          lat: currentLocation.lat,
+          lng: currentLocation.lng,
         }}
       />
     </GoogleMap>
   );
-});
+};
 
 const mapStateToProps = (state) => {
-  const { directions, currentLocation, currentStation } = state.trip;
+  const { directions, currentStation } = state.trip;
   let { stations } = state.trip;
   const startPoint = getStartPoint(stations);
   const endPoint = getEndPoint(stations);
@@ -116,14 +119,11 @@ const mapStateToProps = (state) => {
     endPoint,
     middleStations,
     directions,
-    currentLocation,
   };
 };
 
 const mapDispatchToProps = (dispatch) => ({
   setDirectionsAction: (data) => dispatch(setDirections(data)),
-  updateMarkerLocationAction: ({ lat, lng }) =>
-    dispatch(updateMarkerLocation({ lat, lng })),
 });
 
 export default connect(

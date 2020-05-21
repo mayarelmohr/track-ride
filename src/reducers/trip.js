@@ -4,18 +4,16 @@ import {
   generateBookingStatus,
   generateUserData,
 } from "../helpers/generateBooking";
-import { getStationsPath } from "../selectors/stations";
 import { TIME_SHIFT, TRIP_STATE } from "../helpers/constants";
 
-const initialState = {
+export const initialState = {
   stations: new OrderedMap(),
   directions: {},
-  currentLocation: {},
-  markerPosition: {},
-  currentStation: "",
+  currentStation: null,
   isDataReady: false,
   tripState: TRIP_STATE.IDLE,
   currentStationPosition: {},
+  startTime: null,
   paths: [],
 };
 
@@ -24,20 +22,21 @@ export const setBookings = createAction("Bookings: set bookings");
 export const updateBookings = createAction("Station: update Bookings");
 export const generateBooking = createAction("Bookings: generate booking");
 export const setDirections = createAction("Directions: set Directions");
-export const updateMarkerLocation = createAction(
-  "Location: update current location"
-);
-export const updateMarkerPosition = createAction(
-  "Location: update marker position"
-);
 export const setTripState = createAction("Trip: set current state");
 export const setTripTime = createAction("Time: set trip time");
+export const setTripStartTime = createAction(
+  "Time: save time of when trip started"
+);
+export const updateCurrentStation = createAction(
+  "Station: update the current station"
+);
 
 export default createReducer(
   {
     [setStations]: (state, routes) => {
+      debugger;
       let { stations } = state;
-      routes.map((route) => {
+      routes.forEach((route) => {
         const id = route["station_id"];
         stations = stations.set(id, {
           lat: Number(route["station_latitude"]),
@@ -55,7 +54,7 @@ export default createReducer(
     },
     [setBookings]: (state, users) => {
       let { stations } = state;
-      users.map((user) => {
+      users.forEach((user) => {
         const { station: stationId } = user;
         const stationData = stations.get(stationId);
         stationData.bookings.push(user);
@@ -106,17 +105,8 @@ export default createReducer(
       return {
         ...state,
         directions,
-        paths: getStationsPath(directions),
       };
     },
-    [updateMarkerLocation]: (state, location) => ({
-      ...state,
-      currentLocation: location,
-    }),
-    [updateMarkerPosition]: (state, position) => ({
-      ...state,
-      markerPosition: position,
-    }),
     [setTripTime]: (state, time) => {
       const timeIndex = Math.floor(Math.random() * 3) + 1;
       return {
@@ -124,10 +114,22 @@ export default createReducer(
         tripTime: time + TIME_SHIFT[timeIndex - 1],
       };
     },
-    [setTripState]: (state, newState) => {
+    [setTripStartTime]: (state, time) => {
       return {
         ...state,
-        tripState: newState,
+        startTime: time,
+      };
+    },
+    [setTripState]: (state, tripState) => ({
+      ...state,
+      tripState: tripState,
+    }),
+    [updateCurrentStation]: (state, stationIndex) => {
+      const { stations } = state;
+      const currentStation = stations.valueSeq().toArray[stationIndex];
+      return {
+        ...state,
+        currentStation,
       };
     },
   },

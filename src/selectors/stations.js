@@ -15,33 +15,26 @@ export const getStationsBetweenStartAndEnd = (stations) => {
   return middleStations;
 };
 
-export const getStationsPath = (directions) => {
+export const mapDirectionsToPath = (directions) => {
   if (!directions.routes) {
     return [];
   }
   const { legs } = directions.routes[0];
-  const mappedPath = legs.reduce((acc, val) => {
-    const pathPerStop = [];
-    val.steps.forEach((step) => {
-      const updatedPath = step.path.map((point) => {
-        const { lat, lng } = point;
-        if (typeof lat === "function") {
-          return {
-            lat: lat(),
-            lng: lng(),
-          };
-        }
-        return {
-          lat,
-          lng,
-        };
+  /**
+   * This function returns an array of lats and lngs from
+   * direction object returned from google maps API
+   */
+  return legs.reduce((acc, leg) => {
+    leg.steps.forEach((step, legIndex) => {
+      step.path.forEach((point) => {
+        let { lat, lng } = point;
+        lat = typeof lat === "function" ? lat() : lat;
+        lng = typeof lng === "function" ? lng() : lng;
+        acc.push({ lat, lng, stationIndex: legIndex });
       });
-      pathPerStop.push(updatedPath);
     });
-    acc.push(pathPerStop.flat());
     return acc;
   }, []);
-  return mappedPath;
 };
 
 export const getPathsCount = (paths) => {
@@ -70,16 +63,4 @@ export const getAvailableStations = (stations) => {
   });
 };
 
-export const calculateStopDurationPerStepInPath = (
-  stations,
-  paths,
-  totalTime,
-  stopTimePerStation
-) => {
-  const stepsCount = getPathsCount(paths);
-  const stationsCount = stations.toArray().length;
-  const totalTimeDurationStation = stationsCount * stopTimePerStation;
-  const totalTimeDurationSteps = totalTime - totalTimeDurationStation;
-  const timePerStep = totalTimeDurationSteps / stepsCount;
-  return timePerStep;
-};
+export const getCurrentStationFromLatAndLng = (stations, key = 0) => {};
