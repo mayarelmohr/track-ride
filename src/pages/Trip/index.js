@@ -29,6 +29,7 @@ const Trip = (props) => {
   const [isLoading, setLoading] = useState(true);
   const [isBookRideFormVisible, setBookRideFormVisibility] = useState(false);
   const [markerLocation, setMarkerLocation] = useState({ lat: 0, lng: 0 });
+  const [currentStationIndex, setCurrentStationIndex] = useState(0);
   const requestAnimationFrameRef = React.useRef();
   const rideTimeoutRef = React.useRef();
   const readCSV = async () => {
@@ -67,7 +68,7 @@ const Trip = (props) => {
   }, []);
 
   const startRide = (paths, duration, start) => {
-    const move = () => {
+    const move = (previousStationIndex = 0) => {
       const currentTime = Date.now();
       /* calculates time elapsed time since the last requested frame */
       const elapsedTime = currentTime - start;
@@ -79,9 +80,13 @@ const Trip = (props) => {
         const currentStopPoint = paths[nextLatLngIndex];
         const { lat, lng, stationIndex } = currentStopPoint;
         setMarkerLocation({ lat, lng });
-        props.updateCurrentStationAction(stationIndex);
-
-        requestAnimationFrameRef.current = requestAnimationFrame(move);
+        if (previousStationIndex !== stationIndex) {
+          props.updateCurrentStationAction(stationIndex);
+          props.updateBookingsAction(stationIndex);
+        }
+        requestAnimationFrameRef.current = requestAnimationFrame(() => {
+          move(stationIndex);
+        });
       } else {
         cancelAnimationFrame(requestAnimationFrameRef.current);
         props.setTripStateAction(TRIP_STATE.FINISHED);
@@ -105,10 +110,10 @@ const Trip = (props) => {
             disabled={tripState === TRIP_STATE.TRACKING}
             action={() => {
               props.setTripStateAction(TRIP_STATE.TRACKING);
-              const flatPaths = paths.flat();
               const start = Date.now();
+              props.updateCurrentStationAction(0);
               props.setTripStartTimeAction(start);
-              startRide(flatPaths, TRIP_TIME, start);
+              startRide(paths, TRIP_TIME, start);
             }}
           />
           <Button
@@ -133,13 +138,20 @@ const Trip = (props) => {
 };
 
 const mapStateToProps = (state) => {
-  const { directions, tripTime, tripState, isDataReady } = state.trip;
-  let { stations, startTime, currentStation } = state.trip;
-  currentStation = currentStation || getStartPoint(stations);
+  const {
+    directions,
+    tripTime,
+    tripState,
+    isDataReady,
+    startTime,
+    currentStation,
+    stations,
+  } = state.trip;
   const paths = mapDirectionsToPath(directions);
   const distance = getDistance(directions);
-  const { bookings } = currentStation;
-  startTime = Number(startTime);
+  const { bookings } = currentStation
+    ? stations.get(currentStation)
+    : getStartPoint(stations);
   return {
     startTime,
     isDataReady,

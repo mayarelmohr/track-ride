@@ -34,7 +34,6 @@ export const updateCurrentStation = createAction(
 export default createReducer(
   {
     [setStations]: (state, routes) => {
-      debugger;
       let { stations } = state;
       routes.forEach((route) => {
         const id = route["station_id"];

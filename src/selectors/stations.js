@@ -24,8 +24,8 @@ export const mapDirectionsToPath = (directions) => {
    * This function returns an array of lats and lngs from
    * direction object returned from google maps API
    */
-  return legs.reduce((acc, leg) => {
-    leg.steps.forEach((step, legIndex) => {
+  return legs.reduce((acc, leg, legIndex) => {
+    leg.steps.forEach((step) => {
       step.path.forEach((point) => {
         let { lat, lng } = point;
         lat = typeof lat === "function" ? lat() : lat;
