@@ -149,9 +149,13 @@ const mapStateToProps = (state) => {
   } = state.trip;
   const paths = mapDirectionsToPath(directions);
   const distance = getDistance(directions);
-  const { bookings } = currentStation
-    ? stations.get(currentStation)
-    : getStartPoint(stations);
+  let bookings = [];
+  if (currentStation) {
+    bookings = stations.get(currentStation).bookings;
+  } else if (stations) {
+    bookings = getStartPoint(stations).bookings;
+  }
+
   return {
     startTime,
     isDataReady,
