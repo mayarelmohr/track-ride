@@ -1,4 +1,4 @@
-import { createStore, applyMiddleware, compose } from "redux";
+import { createStore, compose } from "redux";
 import thunk from "redux-thunk";
 import { persistStore, persistReducer } from "redux-persist";
 import localForage from "localforage";
@@ -31,11 +31,7 @@ const persistConfig = {
 const persistedReducer = persistReducer(persistConfig, rootReducer);
 
 const configureStore = (initialState = {}) => {
-  const store = createStore(
-    persistedReducer,
-    initialState,
-    composeEnhancers(applyMiddleware(thunk))
-  );
+  const store = createStore(persistedReducer, initialState, composeEnhancers());
   const persistor = persistStore(store);
   return { store, persistor };
 };
