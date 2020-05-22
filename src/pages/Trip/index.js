@@ -29,7 +29,6 @@ const Trip = (props) => {
   const [isLoading, setLoading] = useState(true);
   const [isBookRideFormVisible, setBookRideFormVisibility] = useState(false);
   const [markerLocation, setMarkerLocation] = useState({ lat: 0, lng: 0 });
-  const [currentStationIndex, setCurrentStationIndex] = useState(0);
   const requestAnimationFrameRef = React.useRef();
   const rideTimeoutRef = React.useRef();
   const readCSV = async () => {
@@ -101,11 +100,12 @@ const Trip = (props) => {
   }
   return (
     <div>
-      <GoogleMap markerLocation={markerLocation} />
+      <GoogleMap markerLocation={markerLocation} data-testid="map" />
       <div className={styles.container}>
         <div className={styles.buttons}>
           <Button
             text="Start ride"
+            data-testid="start-ride-button"
             type="button"
             disabled={tripState === TRIP_STATE.TRACKING}
             action={() => {
@@ -118,6 +118,7 @@ const Trip = (props) => {
           />
           <Button
             text="Book ride"
+            data-testid="book-ride-button"
             type="button"
             disabled={tripState !== TRIP_STATE.IDLE}
             action={() => {
@@ -149,12 +150,10 @@ const mapStateToProps = (state) => {
   } = state.trip;
   const paths = mapDirectionsToPath(directions);
   const distance = getDistance(directions);
-  let bookings = [];
-  if (currentStation) {
-    bookings = stations.get(currentStation).bookings;
-  } else if (stations) {
-    bookings = getStartPoint(stations).bookings;
-  }
+  const bookings =
+    stations.get(currentStation)?.bookings ||
+    getStartPoint(stations)?.bookings ||
+    [];
 
   return {
     startTime,
@@ -163,7 +162,7 @@ const mapStateToProps = (state) => {
     tripTime,
     tripState,
     paths,
-    bookingsList: bookings || [],
+    bookingsList: bookings,
   };
 };
 

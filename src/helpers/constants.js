@@ -5,7 +5,7 @@ export const BOOKING = {
 };
 export const BOOK_LIMIT = 12;
 
-export const TRIP_TIME = 90000;
+export const TRIP_TIME = 70000;
 
 export const TIME_SHIFT = [-30000, 0, 30000];
 

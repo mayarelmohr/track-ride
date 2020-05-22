@@ -2,7 +2,7 @@ import React from "react";
 import styles from "./styles.module.css";
 
 const Button = (props) => {
-  const { action, text, type, disabled } = props;
+  const { action, text, type, disabled, ...rest } = props;
   return (
     <button
       className={styles.button}
@@ -10,6 +10,7 @@ const Button = (props) => {
       disabled={disabled}
       type={type}
       onClick={action}
+      {...rest}
     >
       {text}
     </button>

@@ -1,0 +1,29 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`it renders  1`] = `
+<DocumentFragment>
+  <header
+    class="header"
+  >
+    <a
+      data-testid="home"
+      href="/"
+    >
+      <h1
+        class="wrapper"
+      >
+        <span
+          class="hidden"
+        >
+          Swvl
+        </span>
+        <img
+          alt="swvl"
+          class="logo"
+          src="https://swvl.com/assets/img/swvl-new-logo.png"
+        />
+      </h1>
+    </a>
+  </header>
+</DocumentFragment>
+`;

@@ -5,7 +5,7 @@ import styles from "./styles.module.css";
 const Header = React.memo(() => {
   return (
     <header className={styles.header}>
-      <Link to="/">
+      <Link to="/" data-testid="home">
         <h1 className={styles.wrapper}>
           <span className={styles.hidden}>Swvl</span>
           <img

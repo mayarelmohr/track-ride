@@ -43,9 +43,13 @@ const AddPassengerToStationForm = (props) => {
   };
 
   return (
-    <form className={styles["form-wrapper"]} onSubmit={handleSubmit}>
+    <form
+      className={styles["form-wrapper"]}
+      data-testid="book-form"
+      onSubmit={handleSubmit}
+    >
       <fieldset className={styles.fieldset}>
-        <legend className={styles.legend}>Book Ride</legend>
+        <legend className={styles.legend}>Book Seat</legend>
         <label className={styles.label}>
           Name:
           <input
@@ -67,13 +71,11 @@ const AddPassengerToStationForm = (props) => {
             value={values.station}
           >
             <option value="">Station</option>
-            {availableStations.map((station) => {
-              return (
-                <option key={station.id} value={station.id}>
-                  {station.name}
-                </option>
-              );
-            })}
+            {availableStations.map((station) => (
+              <option key={station.id} value={station.id}>
+                {station.name}
+              </option>
+            ))}
           </select>
         </label>
         {errors.station ? (
@@ -107,7 +109,7 @@ const AddPassengerToStationForm = (props) => {
       </fieldset>
       <p className={styles.button}>
         {hasStations ? null : (
-          <p className={styles.error}>Sorry, All stations are full</p>
+          <span className={styles.error}>Sorry, All stations are full</span>
         )}
         <Button disabled={!hasStations} type="submit" text="Add passenger" />
       </p>
@@ -120,7 +122,7 @@ const mapStateToProps = (state) => {
   if (!OrderedMap.isOrderedMap(stations)) {
     stations = new OrderedMap(stations);
   }
-  const availableStations = getAvailableStations(stations);
+  const availableStations = getAvailableStations(stations).valueSeq();
   const hasStations = availableStations.size > 1;
   return {
     availableStations,

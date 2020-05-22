@@ -7,7 +7,7 @@ import styles from "./styles.module.css";
 
 const Statistics = React.memo(() => {
   return (
-    <section className={styles.container}>
+    <section className={styles.container} data-testid="statistics">
       <BookingStatusChart />
       <NumberOfBookingBarChart />
       <PaymentMethodChart />

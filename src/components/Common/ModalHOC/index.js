@@ -1,8 +1,12 @@
 import React from "react";
 import ReactModal from "react-modal";
 import styles from "./styles.module.css";
+const modalRoot = document.createElement("div");
+modalRoot.setAttribute("id", "modal-root");
+document.body.appendChild(modalRoot);
 
-function ModalElement(WrappedComponent) {
+const ModalElement = (WrappedComponent) => {
+  ReactModal.setAppElement(document.getElementById("root"));
   const Modal = (props) => {
     const { isModalVisible, closeModal, contentLabel, ...rest } = props;
     return (
@@ -19,6 +23,6 @@ function ModalElement(WrappedComponent) {
     );
   };
   return Modal;
-}
+};
 
 export default ModalElement;
