@@ -1,9 +1,9 @@
 import React from "react";
+import { unmountComponentAtNode } from "react-dom";
 import { MemoryRouter } from "react-router-dom";
 import Trip from "./index";
-
 import { Provider } from "react-redux";
-import { render, fireEvent, cleanup } from "@testing-library/react";
+import { render, fireEvent } from "@testing-library/react";
 import { store } from "../../configureStore";
 
 const TripElement = (
@@ -14,23 +14,30 @@ const TripElement = (
   </Provider>
 );
 
-afterEach(() => {
-  cleanup();
-}); // Default on import: runs it after each test.
-
-it("start ride button is disabled after click", () => {
-  const { getByTestId } = render(TripElement);
-  const button = getByTestId("start-ride-button");
-  fireEvent.click(button);
-  const bookRideButton = getByTestId("book-ride-button");
-  expect(bookRideButton).toBeDisabled();
-  expect(button).toBeDisabled();
-  cleanup();
+let container = null;
+beforeEach(() => {
+  container = document.createElement("div");
+  document.body.appendChild(container);
 });
 
-it("book ride button shows form", () => {
+afterEach(() => {
+  unmountComponentAtNode(container);
+  container.remove();
+  container = null;
+});
+
+test("book ride button shows form", () => {
   const { getByTestId } = render(TripElement);
   const bookRideButton = getByTestId("book-ride-button");
   fireEvent.click(bookRideButton);
   expect(getByTestId("book-form"));
+});
+
+test("buttons are disabled after starting ride", () => {
+  const { getByTestId } = render(TripElement);
+  const startRideButton = getByTestId("start-ride-button");
+  fireEvent.click(startRideButton);
+  const bookRideButton = getByTestId("book-ride-button");
+  expect(bookRideButton).toBeDisabled();
+  expect(startRideButton).toBeDisabled();
 });

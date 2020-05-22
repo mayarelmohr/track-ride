@@ -3,9 +3,9 @@ import styles from "./styles.module.css";
 
 const TripInformation = React.memo(({ distance, time }) => {
   return (
-    <section>
+    <section data-testid="trip-info">
       <h2>Trip Information</h2>
-      <p>{`Trip Duration: ${time} ms`}</p>
+      <p>{`Trip Duration: ${time / 1000} seconds`}</p>
       <div className={styles.wrapper}>
         <div className={styles.info}>
           <div className={styles.image}>

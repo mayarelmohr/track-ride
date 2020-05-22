@@ -8,7 +8,7 @@ import Button from "../Common/Button";
 import withModal from "../Common/ModalHOC";
 import styles from "./styles.module.css";
 
-const AddPassengerToStationForm = (props) => {
+export const AddPassengerToStationForm = (props) => {
   const { availableStations, hasStations } = props;
   const [values, setValues] = useState({
     name: "",
@@ -50,38 +50,41 @@ const AddPassengerToStationForm = (props) => {
     >
       <fieldset className={styles.fieldset}>
         <legend className={styles.legend}>Book Seat</legend>
-        <label className={styles.label}>
+        <label htmlFor="name" className={styles.label}>
           Name:
-          <input
-            type="text"
-            name="name"
-            className={styles.input}
-            onChange={handleChange}
-            value={values.name}
-          />
         </label>
+        <input
+          data-testid="name"
+          type="text"
+          name="name"
+          className={styles.input}
+          onChange={handleChange}
+          value={values.name}
+        />
         {errors.name ? <p className={styles.error}>{errors.name}</p> : null}
         <label htmlFor="station" className={styles.label}>
           Station:
-          <select
-            name="station"
-            id="station-select"
-            className={styles.input}
-            onChange={handleChange}
-            value={values.station}
-          >
-            <option value="">Station</option>
-            {availableStations.map((station) => (
-              <option key={station.id} value={station.id}>
-                {station.name}
-              </option>
-            ))}
-          </select>
         </label>
+        <select
+          data-testid="station"
+          name="station"
+          id="station-select"
+          className={styles.input}
+          onChange={handleChange}
+          value={values.station}
+        >
+          <option value="">Station</option>
+          {availableStations.map((station) => (
+            <option key={station.id} value={station.id} data-testid="option">
+              {station.name}
+            </option>
+          ))}
+        </select>
+
         {errors.station ? (
           <p className={styles.error}>{errors.station}</p>
         ) : null}
-        <label>
+        <label data-testid="payment">
           <span className={styles.label}>Select you payment:</span>
           <input
             type="radio"
@@ -123,7 +126,8 @@ const mapStateToProps = (state) => {
     stations = new OrderedMap(stations);
   }
   const availableStations = getAvailableStations(stations).valueSeq();
-  const hasStations = availableStations.size > 1;
+  const hasStations = availableStations.size >= 1;
+  debugger;
   return {
     availableStations,
     hasStations,
@@ -136,7 +140,6 @@ const mapDispatchToProps = (dispatch) => {
   };
 };
 
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(withModal(AddPassengerToStationForm));
+export default withModal(
+  connect(mapStateToProps, mapDispatchToProps)(AddPassengerToStationForm)
+);

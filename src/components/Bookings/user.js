@@ -17,7 +17,7 @@ const User = React.memo(({ booking }) => {
     }
   };
   return (
-    <div className={styles.user}>
+    <div className={styles.user} data-testid="user">
       <div className={styles.image}>
         <img src={picture} loading="lazy" alt={name} />
       </div>
