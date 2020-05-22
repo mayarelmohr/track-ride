@@ -11,6 +11,7 @@ const ModalElement = (WrappedComponent) => {
     const { isModalVisible, closeModal, contentLabel, ...rest } = props;
     return (
       <ReactModal
+        ariaHideApp={false}
         isOpen={isModalVisible}
         onRequestClose={closeModal}
         shouldCloseOnOverlayClick
