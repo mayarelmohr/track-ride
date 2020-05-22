@@ -12,7 +12,6 @@ export const initialState = {
   currentStation: null,
   isDataReady: false,
   tripState: TRIP_STATE.IDLE,
-  currentStationPosition: {},
   startTime: null,
   paths: [],
 };
@@ -34,6 +33,7 @@ export const updateCurrentStation = createAction(
 export default createReducer(
   {
     [setStations]: (state, routes) => {
+      /** read from routes csv and saves it store */
       let { stations } = state;
       routes.forEach((route) => {
         const id = route["station_id"];
@@ -52,7 +52,9 @@ export default createReducer(
       };
     },
     [setBookings]: (state, users) => {
+      /** read from users csv and saves them to their respective stations */
       let { stations } = state;
+      debugger;
       users.forEach((user) => {
         const { station: stationId } = user;
         const stationData = stations.get(stationId);
@@ -67,10 +69,11 @@ export default createReducer(
         isDataReady: true,
       };
     },
-    [updateBookings]: (state, index) => {
+    [updateBookings]: (state, id) => {
+      /** On reaching a station
+       * it randomizes the booking status for the passengers
+       * and updates bookings for this station */
       let { stations } = state;
-      let currentStation = stations.toArray()[index];
-      let id = currentStation[0];
       let stationData = stations.get(id);
       let updatedBooking = generateBookingStatus(stationData.bookings);
       stations = stations.set(id, {
@@ -81,11 +84,13 @@ export default createReducer(
       return {
         ...state,
         stations,
-        currentStation: id,
-        currentStationPosition: stationData,
       };
     },
     [generateBooking]: (state, data) => {
+      /** Adds a new booking from add passenger form
+       * The id is randomly generated
+       * Picture is requested based on id
+       */
       let { stations } = state;
       const { station: stationId } = data;
       const stationData = stations.get(stationId);
@@ -107,6 +112,9 @@ export default createReducer(
       };
     },
     [setTripTime]: (state, time) => {
+      /** Time of trip is set from random value from time shift array
+       * It can be +30 sec or +0 or -30sec
+       */
       const timeIndex = Math.floor(Math.random() * 3) + 1;
       return {
         ...state,
@@ -123,9 +131,9 @@ export default createReducer(
       ...state,
       tripState: tripState,
     }),
-    [updateCurrentStation]: (state, stationIndex) => {
+    [updateCurrentStation]: (state, id) => {
       const { stations } = state;
-      const currentStation = stations.valueSeq().toArray[stationIndex];
+      const currentStation = stations.get(id);
       return {
         ...state,
         currentStation,

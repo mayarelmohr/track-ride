@@ -3,7 +3,7 @@ import { BOOKING } from "./constants";
 export const generateUserData = (userId) => {
   const picture = `https://robohash.org/${userId}.png?size=50x50`;
   const status = BOOKING.IN;
-  return { picture, status };
+  return { picture, status, id: userId };
 };
 
 export const generateBookingStatus = (bookings) => {

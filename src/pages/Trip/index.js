@@ -67,7 +67,7 @@ const Trip = (props) => {
   }, []);
 
   const startRide = (paths, duration, start) => {
-    const move = (previousStationIndex = 0) => {
+    const move = (previousStationId = 0) => {
       const currentTime = Date.now();
       /* calculates time elapsed time since the last requested frame */
       const elapsedTime = currentTime - start;
@@ -77,14 +77,14 @@ const Trip = (props) => {
       const nextLatLngIndex = Math.floor(progress * paths.length);
       if (elapsedTime < duration && nextLatLngIndex < paths.length) {
         const currentStopPoint = paths[nextLatLngIndex];
-        const { lat, lng, stationIndex } = currentStopPoint;
+        const { lat, lng, stationId } = currentStopPoint;
         setMarkerLocation({ lat, lng });
-        if (previousStationIndex !== stationIndex) {
-          props.updateCurrentStationAction(stationIndex);
-          props.updateBookingsAction(stationIndex);
+        if (previousStationId !== stationId) {
+          props.updateCurrentStationAction(stationId);
+          props.updateBookingsAction(stationId);
         }
         requestAnimationFrameRef.current = requestAnimationFrame(() => {
-          move(stationIndex);
+          move(stationId);
         });
       } else {
         cancelAnimationFrame(requestAnimationFrameRef.current);
@@ -148,12 +148,10 @@ const mapStateToProps = (state) => {
     currentStation,
     stations,
   } = state.trip;
-  const paths = mapDirectionsToPath(directions);
+  const paths = mapDirectionsToPath(directions, stations);
   const distance = getDistance(directions);
   const bookings =
-    stations.get(currentStation)?.bookings ||
-    getStartPoint(stations)?.bookings ||
-    [];
+    currentStation?.bookings || getStartPoint(stations)?.bookings || [];
 
   return {
     startTime,
@@ -170,12 +168,12 @@ const mapDispatchToProps = (dispatch) => {
   return {
     setStationsAction: (data) => dispatch(setStations(data)),
     setBookingsAction: (data) => dispatch(setBookings(data)),
-    updateBookingsAction: (index) => dispatch(updateBookings(index)),
+    updateBookingsAction: (stationId) => dispatch(updateBookings(stationId)),
     setTripTimeAction: (time) => dispatch(setTripTime(time)),
     setTripStateAction: (state) => dispatch(setTripState(state)),
     setTripStartTimeAction: (time) => dispatch(setTripStartTime(time)),
-    updateCurrentStationAction: (index) =>
-      dispatch(updateCurrentStation(index)),
+    updateCurrentStationAction: (stationId) =>
+      dispatch(updateCurrentStation(stationId)),
   };
 };
 

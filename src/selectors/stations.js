@@ -15,7 +15,7 @@ export const getStationsBetweenStartAndEnd = (stations) => {
   return middleStations;
 };
 
-export const mapDirectionsToPath = (directions) => {
+export const mapDirectionsToPath = (directions, stations) => {
   if (!directions.routes) {
     return [];
   }
@@ -23,14 +23,17 @@ export const mapDirectionsToPath = (directions) => {
   /**
    * This function returns an array of lats and lngs from
    * direction object returned from google maps API
+   * It also sets the station id to object to make it easier to update
+   * the station location whne captain moves
    */
+  const stationsArray = stations.keySeq().toArray();
   return legs.reduce((acc, leg, legIndex) => {
     leg.steps.forEach((step) => {
       step.path.forEach((point) => {
         let { lat, lng } = point;
         lat = typeof lat === "function" ? lat() : lat;
         lng = typeof lng === "function" ? lng() : lng;
-        acc.push({ lat, lng, stationIndex: legIndex });
+        acc.push({ lat, lng, stationId: stationsArray[legIndex] });
       });
     });
     return acc;
