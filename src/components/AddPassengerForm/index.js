@@ -127,7 +127,6 @@ const mapStateToProps = (state) => {
   }
   const availableStations = getAvailableStations(stations).valueSeq();
   const hasStations = availableStations.size >= 1;
-  debugger;
   return {
     availableStations,
     hasStations,

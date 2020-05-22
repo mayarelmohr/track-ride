@@ -1,0 +1,94 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`add snapshot for booking 1`] = `
+<DocumentFragment>
+  <section>
+    <h2>
+      Bookings
+    </h2>
+    <ul
+      class="list"
+    >
+      <li>
+        <div
+          class="user"
+          data-testid="user"
+        >
+          <div
+            class="image"
+          >
+            <img
+              alt="John Doe"
+              loading="lazy"
+              src="https://robohash.org/1234?size=50x50"
+            />
+          </div>
+          <div>
+            <p
+              class="name"
+            >
+              John Doe
+            </p>
+            <p
+              class="info"
+            >
+              213 checked in
+            </p>
+            <p
+              class="info"
+            >
+              <span
+                aria-label="payment"
+                role="img"
+              >
+                💵 credit
+              </span>
+            </p>
+          </div>
+        </div>
+      </li>
+    </ul>
+  </section>
+</DocumentFragment>
+`;
+
+exports[`add snapshot for user 1`] = `
+<DocumentFragment>
+  <div
+    class="user"
+    data-testid="user"
+  >
+    <div
+      class="image"
+    >
+      <img
+        alt="John Doe"
+        loading="lazy"
+        src="https://robohash.org/1234?size=50x50"
+      />
+    </div>
+    <div>
+      <p
+        class="name"
+      >
+        John Doe
+      </p>
+      <p
+        class="info"
+      >
+        213 checked in
+      </p>
+      <p
+        class="info"
+      >
+        <span
+          aria-label="payment"
+          role="img"
+        >
+          💵 credit
+        </span>
+      </p>
+    </div>
+  </div>
+</DocumentFragment>
+`;

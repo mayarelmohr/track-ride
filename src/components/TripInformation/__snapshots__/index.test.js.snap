@@ -1,0 +1,103 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`add snapshot for trip information  1`] = `
+<DocumentFragment>
+  <section
+    data-testid="trip-info"
+  >
+    <h2>
+      Trip Information
+    </h2>
+    <p>
+      Trip Duration: NaN seconds
+    </p>
+    <div
+      class="wrapper"
+    >
+      <div
+        class="info"
+      >
+        <div
+          class="image"
+        >
+          <img
+            alt="Robert"
+            src="https://robohash.org/1234?size=50x50"
+          />
+        </div>
+        <div
+          class="car"
+        >
+          <img
+            alt="car mode"
+            src="./images/van.svg"
+          />
+        </div>
+        <div>
+          <p
+            class="highlighted"
+          >
+            Herbert Patton
+            <span
+              class="rate"
+            >
+              <span
+                aria-label="rating"
+                role="img"
+              >
+                ⭐️
+              </span>
+              5.0
+            </span>
+          </p>
+          <p>
+            Toyato HiAce - GA 2770
+          </p>
+        </div>
+      </div>
+      <div
+        class="destination"
+      >
+        <span>
+           New Cairo
+        </span>
+        <span>
+           Nasr City
+        </span>
+      </div>
+      <dl
+        class="about"
+      >
+        <div>
+          <dt>
+            <span
+              aria-label="location"
+              role="img"
+            >
+              📍
+            </span>
+            Trip Distance:
+          </dt>
+          <dd>
+            undefined KM
+          </dd>
+        </div>
+        <div>
+          <dt>
+            <span
+              aria-label="fare"
+              role="img"
+            >
+              💵
+            </span>
+            Trip Fare:
+          </dt>
+          <dd>
+            45 EGP
+          </dd>
+        </div>
+      </dl>
+    </div>
+  </section>
+</DocumentFragment>
+`;

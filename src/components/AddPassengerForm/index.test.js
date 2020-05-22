@@ -12,6 +12,10 @@ const mockStationsArray = [
   { lat: 30.08201257, lng: 31.34388217, name: "Stop 10", id: "222" },
 ];
 
+const AddPassengerElement = (
+  <AddPassengerToStationForm hasStations={true} availableStations={[]} />
+);
+
 test("Shows errors on when has stations is false", () => {
   const { container } = render(
     <AddPassengerToStationForm hasStations={false} availableStations={[]} />
@@ -20,9 +24,7 @@ test("Shows errors on when has stations is false", () => {
 });
 
 test("Shows name error message", () => {
-  const { getByTestId, getByText, container } = render(
-    <AddPassengerToStationForm hasStations={true} availableStations={[]} />
-  );
+  const { getByTestId, getByText, container } = render(AddPassengerElement);
   const station = getByTestId("station");
   fireEvent.change(station, { target: { value: "213" } });
   const button = getByText("Add passenger");
@@ -32,9 +34,7 @@ test("Shows name error message", () => {
 });
 
 test("Shows station error message", () => {
-  const { getByTestId, getByText, container } = render(
-    <AddPassengerToStationForm hasStations={true} availableStations={[]} />
-  );
+  const { getByTestId, getByText, container } = render(AddPassengerElement);
   const name = getByTestId("name");
   fireEvent.change(name, { target: { value: "name" } });
   const button = getByText("Add passenger");
@@ -52,4 +52,11 @@ test("Stations are rendered correctly", () => {
   );
   const options = getAllByTestId("option");
   expect(options).toHaveLength(mockStationsArray.length);
+});
+
+test("add snapshot for add passenger form", () => {
+  const { container, asFragment } = render(
+    <AddPassengerToStationForm hasStations={true} availableStations={[]} />
+  );
+  expect(asFragment(container)).toMatchSnapshot();
 });

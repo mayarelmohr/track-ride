@@ -1,0 +1,96 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`add snapshot for add passenger form 1`] = `
+<DocumentFragment>
+  <form
+    class="form-wrapper"
+    data-testid="book-form"
+  >
+    <fieldset
+      class="fieldset"
+    >
+      <legend
+        class="legend"
+      >
+        Book Seat
+      </legend>
+      <label
+        class="label"
+        for="name"
+      >
+        Name:
+      </label>
+      <input
+        class="input"
+        data-testid="name"
+        name="name"
+        type="text"
+        value=""
+      />
+      <label
+        class="label"
+        for="station"
+      >
+        Station:
+      </label>
+      <select
+        class="input"
+        data-testid="station"
+        id="station-select"
+        name="station"
+      >
+        <option
+          value=""
+        >
+          Station
+        </option>
+      </select>
+      <label
+        data-testid="payment"
+      >
+        <span
+          class="label"
+        >
+          Select you payment:
+        </span>
+        <input
+          id="credit"
+          name="payment"
+          type="radio"
+          value="credit"
+        />
+        <label
+          class="radio-label"
+          for="credit"
+        >
+          Credit
+        </label>
+        <input
+          checked=""
+          id="cash"
+          name="payment"
+          type="radio"
+          value="cash"
+        />
+        <label
+          class="radio-label"
+          for="cash"
+        >
+          Cash
+        </label>
+      </label>
+    </fieldset>
+    <p
+      class="button"
+    >
+      <button
+        class="button"
+        name="Add passenger"
+        type="submit"
+      >
+        Add passenger
+      </button>
+    </p>
+  </form>
+</DocumentFragment>
+`;

@@ -30,3 +30,15 @@ test("Shows Booking data", () => {
   const bookingItem = getAllByTestId("user");
   expect(bookingItem).toHaveLength(1);
 });
+
+test("add snapshot for user", () => {
+  const { container, asFragment } = render(<User booking={mockBooking[0]} />);
+  expect(asFragment(container)).toMatchSnapshot();
+});
+
+test("add snapshot for booking", () => {
+  const { container, asFragment } = render(
+    <Booking bookingsList={mockBooking} />
+  );
+  expect(asFragment(container)).toMatchSnapshot();
+});

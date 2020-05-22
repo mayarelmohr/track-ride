@@ -12,3 +12,8 @@ test("Shows time and distance correctly", () => {
   const expectedTime = 120000 / 1000;
   expect(tripInfoElement).toHaveTextContent(expectedTime);
 });
+
+test("add snapshot for trip information ", () => {
+  const { container, asFragment } = render(<TripInfo />);
+  expect(asFragment(container)).toMatchSnapshot();
+});
