@@ -18,9 +18,9 @@ import {
 import Button from "../../components/Common/Button";
 import Loading from "../../components/Common/Loading";
 import {
-  mapDirectionsToPath,
-  getDistance,
-  getStartPoint,
+  mapDirectionsToPathSelector,
+  getDistanceSelector,
+  getStartPointSelector,
 } from "../../selectors/stations";
 import styles from "./styles.module.css";
 import { TRIP_TIME, TRIP_STATE } from "../../helpers/constants";
@@ -51,7 +51,7 @@ const Trip = (props) => {
   useEffect(() => {
     if (tripState === TRIP_STATE.TRACKING) {
       rideTimeoutRef.current = setTimeout(() => {
-        startRide(paths, TRIP_TIME, startTime);
+        startRide(paths, tripTime, startTime);
       }, 300);
     }
     if (!isDataReady) {
@@ -113,14 +113,14 @@ const Trip = (props) => {
               const start = Date.now();
               props.updateCurrentStationAction(0);
               props.setTripStartTimeAction(start);
-              startRide(paths, TRIP_TIME, start);
+              startRide(paths, tripTime, start);
             }}
           />
           <Button
             text="Book ride"
             data-testid="book-ride-button"
             type="button"
-            disabled={tripState !== TRIP_STATE.IDLE}
+            disabled={tripState === TRIP_STATE.TRACKING}
             action={() => {
               setBookRideFormVisibility(true);
             }}
@@ -140,18 +140,16 @@ const Trip = (props) => {
 
 const mapStateToProps = (state) => {
   const {
-    directions,
     tripTime,
     tripState,
     isDataReady,
     startTime,
     currentStation,
-    stations,
   } = state.trip;
-  const paths = mapDirectionsToPath(directions, stations);
-  const distance = getDistance(directions);
+  const paths = mapDirectionsToPathSelector(state);
+  const distance = getDistanceSelector(state);
   const bookings =
-    currentStation?.bookings || getStartPoint(stations)?.bookings || [];
+    currentStation?.bookings || getStartPointSelector(state)?.bookings || [];
 
   return {
     startTime,
