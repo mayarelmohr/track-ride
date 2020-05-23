@@ -31,8 +31,10 @@ https://track-live-ride.netlify.app/
    - It saves start time for trip.
    - Requests animation frame.
    - Gets the next lat and lng for marker based on the elapsed time.
-     > const elapsedTime = currentTime - startTime;
-     > const progress = elapsedTime / tripTime; //next point
+   ```javascript
+   const elapsedTime = currentTime - startTime;
+   const progress = elapsedTime / tripTime; //next point
+   ```
    - Updates current station based on lat and lng.
 9. On reload:
 
