@@ -12,11 +12,20 @@ const chartOptions = {
   legend: {
     position: "top",
   },
+  scales: {
+    yAxes: [
+      {
+        ticks: {
+          beginAtZero: true,
+        },
+      },
+    ],
+  },
 };
 const PaymentMethodChart = ({ stationNames, paymentMethodsForStations }) => {
   return (
     <section className={styles.section}>
-      <h2>Number of different Payment Methods for each stations</h2>
+      <h2>Number of different Payment Methods for each station</h2>
       <Bar
         data={{
           labels: stationNames,

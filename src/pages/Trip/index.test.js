@@ -14,30 +14,12 @@ const TripElement = (
   </Provider>
 );
 
-let container = null;
-beforeEach(() => {
-  container = document.createElement("div");
-  document.body.appendChild(container);
+test("Shows loading indicator", () => {
+  const { container } = render(TripElement);
+  expect(container.innerHTML).toMatch("Loading");
 });
 
-afterEach(() => {
-  unmountComponentAtNode(container);
-  container.remove();
-  container = null;
-});
-
-test("book ride button shows form", () => {
-  const { getByTestId } = render(TripElement);
-  const bookRideButton = getByTestId("book-ride-button");
-  fireEvent.click(bookRideButton);
-  expect(getByTestId("book-form"));
-});
-
-test("buttons are disabled after starting ride", () => {
-  const { getByTestId } = render(TripElement);
-  const startRideButton = getByTestId("start-ride-button");
-  fireEvent.click(startRideButton);
-  const bookRideButton = getByTestId("book-ride-button");
-  expect(bookRideButton).toBeDisabled();
-  expect(startRideButton).toBeDisabled();
+test("add snapshot for trip loading", () => {
+  const { container, asFragment } = render(TripElement);
+  expect(asFragment(container)).toMatchSnapshot();
 });

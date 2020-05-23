@@ -1,0 +1,15 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`add snapshot for trip loading 1`] = `
+<DocumentFragment>
+  <p>
+    <span
+      aria-labelledby="loading"
+      role="img"
+    >
+      ⏳
+    </span>
+    Loading
+  </p>
+</DocumentFragment>
+`;

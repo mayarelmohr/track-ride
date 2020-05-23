@@ -17,5 +17,5 @@ test("navigates home when you click the logo", () => {
   );
   const link = getByTestId("home");
   fireEvent.click(link);
-  expect(container.innerHTML).toMatch("Trip Information");
+  expect(container.innerHTML).toMatch("Loading");
 });
