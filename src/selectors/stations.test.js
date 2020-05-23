@@ -4,37 +4,32 @@ import {
   getStationsBetweenStartAndEndSelector,
   mapDirectionsToPathSelector,
   getDistanceSelector,
+  getAvailableStationsSelector,
 } from "./stations";
-import { OrderedMap } from "immutable";
-import { mockedDirections } from "../tests/mockData";
+import { mockedDirections, mockedStations } from "../tests/mockData";
 
 describe("Stations Selectors", () => {
-  let mockedStations = new OrderedMap();
-  mockedStations = mockedStations.set("213", { name: "Stop 1" });
-  mockedStations = mockedStations.set("214", { name: "Stop 2" });
-  mockedStations = mockedStations.set("215", { name: "Stop 3" });
-  mockedStations = mockedStations.set("216", { name: "Stop 4" });
-
+  const mockedStationsMap = mockedStations();
   it("get first station from state", () => {
-    const output = getStartPointSelector.resultFunc(mockedStations);
+    const output = getStartPointSelector.resultFunc(mockedStationsMap);
     expect(output.name).toBe("Stop 1");
   });
 
   it("get last station from state", () => {
-    const output = getEndPointSelector.resultFunc(mockedStations);
+    const output = getEndPointSelector.resultFunc(mockedStationsMap);
     expect(output.name).toBe("Stop 4");
   });
 
   it("get middle stations from state", () => {
     const output = getStationsBetweenStartAndEndSelector.resultFunc(
-      mockedStations
+      mockedStationsMap
     );
     expect(output).toHaveLength(2);
   });
 
   it("get path from directions object", () => {
     const output = mapDirectionsToPathSelector.resultFunc(
-      mockedStations,
+      mockedStationsMap,
       mockedDirections
     );
     expect(output).toHaveLength(4);
@@ -45,5 +40,9 @@ describe("Stations Selectors", () => {
   it("get distance from directions object", () => {
     const output = getDistanceSelector.resultFunc(mockedDirections);
     expect(output).toBeGreaterThan(0);
+  });
+  it("gets available stations", () => {
+    const output = getAvailableStationsSelector.resultFunc(mockedStationsMap);
+    expect(output.toArray()).toHaveLength(2);
   });
 });

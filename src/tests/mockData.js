@@ -1,3 +1,5 @@
+import { OrderedMap } from "immutable";
+
 export const mockedDirections = {
   routes: [
     {
@@ -46,4 +48,38 @@ export const mockedDirections = {
       ],
     },
   ],
+};
+
+export const mockedStations = () => {
+  let mockedStations = new OrderedMap();
+  const bookingsArray = [...Array(12)].map((i) => {
+    return {
+      name: "Dummy user",
+      id: i,
+      status: "in",
+      payment: "cash",
+    };
+  });
+  const secondBookingArray = [...Array(6)].map((i) => {
+    return {
+      name: "Dummy user",
+      id: i * 10,
+      status: "out",
+      payment: "credit",
+    };
+  });
+  mockedStations = mockedStations.set("213", {
+    name: "Stop 1",
+    bookings: bookingsArray,
+  });
+  mockedStations = mockedStations.set("214", {
+    name: "Stop 2",
+    bookings: secondBookingArray,
+  });
+  mockedStations = mockedStations.set("215", { name: "Stop 3", bookings: [] });
+  mockedStations = mockedStations.set("216", {
+    name: "Stop 4",
+    bookings: bookingsArray,
+  });
+  return mockedStations;
 };

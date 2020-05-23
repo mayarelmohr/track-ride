@@ -1,6 +1,6 @@
 import React from "react";
 import { connect } from "react-redux";
-import { getBookingStatus } from "../../selectors/statistics";
+import { getBookingStatusSelector } from "../../selectors/statistics";
 import { Doughnut } from "react-chartjs-2";
 import styles from "./styles.module.css";
 
@@ -43,8 +43,7 @@ const BookingStatusChart = ({ labels, points }) => {
 };
 
 const mapStateToProps = (state) => {
-  const { stations } = state.trip;
-  const bookingStatus = getBookingStatus(stations);
+  const bookingStatus = getBookingStatusSelector(state);
   let labels = Object.keys(bookingStatus);
   let points = Object.values(bookingStatus);
   return { labels, points };

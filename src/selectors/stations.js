@@ -1,15 +1,11 @@
 import { createSelector } from "reselect";
-
+import { stationsSelector, directionsSelector } from "./selectors";
 import { BOOK_LIMIT } from "../helpers/constants";
-
-export const stationsSelector = (state) => state.trip.stations;
-export const directionsSelector = (state) => state.trip.directions;
 
 export const getStartPointSelector = createSelector(
   stationsSelector,
   (stations) => {
     /** Returns first station in route */
-    console.log(stations);
     const stationsArray = stations.valueSeq().toArray();
     return stationsArray[0];
   }
@@ -80,8 +76,13 @@ export const getDistanceSelector = createSelector(
   }
 );
 
-export const getAvailableStations = (stations) => {
-  return stations.filter((station) => {
-    return station.bookings.length < BOOK_LIMIT;
-  });
-};
+export const getAvailableStationsSelector = createSelector(
+  stationsSelector,
+  (stations) => {
+    return stations
+      .filter((station) => {
+        return station.bookings.length < BOOK_LIMIT;
+      })
+      .valueSeq();
+  }
+);

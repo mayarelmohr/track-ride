@@ -1,8 +1,8 @@
 import React from "react";
 import { connect } from "react-redux";
 import {
-  getStationNames,
-  getBookingsCountPerStation,
+  getStationNamesSelector,
+  getBookingsCountPerStationSelector,
 } from "../../selectors/statistics";
 import { Bar } from "react-chartjs-2";
 import styles from "./styles.module.css";
@@ -40,9 +40,8 @@ const NumberOfBookingBarChart = ({ stationNames, bookingsCountPerStation }) => {
 };
 
 const mapStateToProps = (state) => {
-  const { stations } = state.trip;
-  const bookingsCountPerStation = getBookingsCountPerStation(stations);
-  const stationNames = getStationNames(stations);
+  const bookingsCountPerStation = getBookingsCountPerStationSelector(state);
+  const stationNames = getStationNamesSelector(state);
   return { stationNames, bookingsCountPerStation };
 };
 

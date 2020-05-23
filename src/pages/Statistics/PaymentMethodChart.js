@@ -1,8 +1,8 @@
 import React from "react";
 import { connect } from "react-redux";
 import {
-  getPaymentInfoPerStation,
-  getStationNames,
+  getPaymentInfoPerStationSelector,
+  getStationNamesSelector,
 } from "../../selectors/statistics";
 import { Bar } from "react-chartjs-2";
 import styles from "./styles.module.css";
@@ -44,9 +44,8 @@ const PaymentMethodChart = ({ stationNames, paymentMethodsForStations }) => {
 };
 
 const mapStateToProps = (state) => {
-  const { stations } = state.trip;
-  const paymentMethodsForStations = getPaymentInfoPerStation(stations);
-  const stationNames = getStationNames(stations);
+  const paymentMethodsForStations = getPaymentInfoPerStationSelector(state);
+  const stationNames = getStationNamesSelector(state);
   return { stationNames, paymentMethodsForStations };
 };
 
