@@ -11,9 +11,9 @@ import { connect } from "react-redux";
 import MarkerInfo from "./markerInfo";
 
 import {
-  getStartPoint,
-  getEndPoint,
-  getStationsBetweenStartAndEnd,
+  getStartPointSelector,
+  getEndPointSelector,
+  getStationsBetweenStartAndEndSelector,
 } from "../../selectors/stations";
 
 import { setDirections } from "../../reducers/trip";
@@ -108,9 +108,9 @@ const MapElement = (props) => {
 const mapStateToProps = (state) => {
   const { directions, currentStation } = state.trip;
   let { stations } = state.trip;
-  const startPoint = getStartPoint(stations);
-  const endPoint = getEndPoint(stations);
-  const middleStations = getStationsBetweenStartAndEnd(stations);
+  const startPoint = getStartPointSelector(state);
+  const endPoint = getEndPointSelector(state);
+  const middleStations = getStationsBetweenStartAndEndSelector(state);
   const currentStationPosition = stations.get(currentStation) || {};
   return {
     currentStationPosition,
