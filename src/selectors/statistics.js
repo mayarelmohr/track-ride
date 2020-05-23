@@ -22,6 +22,7 @@ export const getBookingStatusSelector = createSelector(
 export const getPaymentInfoPerStationSelector = createSelector(
   stationsSelector,
   (stations) => {
+    /**Accumulates payment data for all users */
     const data = {
       [PAYMENT_METHOD.CREDIT]: [],
       [PAYMENT_METHOD.CASH]: [],
@@ -46,6 +47,7 @@ export const getPaymentInfoPerStationSelector = createSelector(
 export const getStationNamesSelector = createSelector(
   stationsSelector,
   (stations) => {
+    /**list all station names in an array*/
     return stations.reduce((acc, station) => {
       acc.push(station.name);
       return acc;
@@ -56,6 +58,7 @@ export const getStationNamesSelector = createSelector(
 export const getBookingsCountPerStationSelector = createSelector(
   stationsSelector,
   (stations) => {
+    /**get number of bookings for each station*/
     return stations.reduce((acc, station) => {
       acc.push(station.bookings.length);
       return acc;
