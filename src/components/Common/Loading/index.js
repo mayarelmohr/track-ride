@@ -1,12 +1,13 @@
 import React from "react";
+import styles from "./styles.module.css";
 
 const Loading = React.memo(() => (
-  <p>
+  <div className={styles.loading}>
     <span role="img" aria-labelledby="loading">
       ⏳
     </span>
     Loading
-  </p>
+  </div>
 ));
 
 export default Loading;
