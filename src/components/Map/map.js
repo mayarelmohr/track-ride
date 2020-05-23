@@ -30,7 +30,9 @@ const MapElement = (props) => {
     currentLocation,
     directions,
   } = props;
+
   const getDirections = () => {
+    /** gets directions through directions API from google Maps API */
     const { google } = window;
     const { LatLng } = google.maps;
     const DirectionsService = new google.maps.DirectionsService();
@@ -59,9 +61,11 @@ const MapElement = (props) => {
       }
     );
   };
+
   useEffect(() => {
     getDirections();
   }, []);
+
   return (
     <GoogleMap
       defaultZoom={7.5}

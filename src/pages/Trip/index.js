@@ -31,7 +31,7 @@ const Trip = (props) => {
   const [markerLocation, setMarkerLocation] = useState({ lat: 0, lng: 0 });
   const requestAnimationFrameRef = React.useRef();
   const rideTimeoutRef = React.useRef();
-  const readCSV = async () => {
+  const initializeTrip = async () => {
     const stationsData = await csv("./data/route.csv");
     props.setStationsAction(stationsData);
     const usersData = await csv("./data/users.csv");
@@ -50,13 +50,17 @@ const Trip = (props) => {
 
   useEffect(() => {
     if (tripState === TRIP_STATE.TRACKING) {
+      /** To Reload car location from the expected point
+       * Timeout is just set for delay */
       rideTimeoutRef.current = setTimeout(() => {
         startRide(paths, tripTime, startTime);
       }, 300);
     }
     if (!isDataReady) {
-      readCSV();
-      setLoading(false);
+      /** Cached prop in stations reducer to avoid reinitializing data */
+      initializeTrip().then(() => {
+        setLoading(false);
+      });
     } else {
       setLoading(false);
     }
@@ -67,7 +71,7 @@ const Trip = (props) => {
   }, []);
 
   const startRide = (paths, duration, start) => {
-    const move = (previousStationId = 0) => {
+    const move = (previousStationId) => {
       const currentTime = Date.now();
       /* calculates time elapsed time since the last requested frame */
       const elapsedTime = currentTime - start;
@@ -80,6 +84,7 @@ const Trip = (props) => {
         const { lat, lng, stationId } = currentStopPoint;
         setMarkerLocation({ lat, lng });
         if (previousStationId !== stationId) {
+          /** the new lat and lngs are in a new station */
           props.updateCurrentStationAction(stationId);
           props.updateBookingsAction(stationId);
         }
@@ -111,7 +116,6 @@ const Trip = (props) => {
             action={() => {
               props.setTripStateAction(TRIP_STATE.TRACKING);
               const start = Date.now();
-              props.updateCurrentStationAction(0);
               props.setTripStartTimeAction(start);
               startRide(paths, tripTime, start);
             }}
