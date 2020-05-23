@@ -54,7 +54,6 @@ export default createReducer(
     [setBookings]: (state, users) => {
       /** read from users csv and saves them to their respective stations */
       let { stations } = state;
-      debugger;
       users.forEach((user) => {
         const { station: stationId } = user;
         const stationData = stations.get(stationId);

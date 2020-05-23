@@ -62,7 +62,7 @@ export const mapDirectionsToPathSelector = createSelector(
 export const getDistanceSelector = createSelector(
   directionsSelector,
   (directions) => {
-    /** get distamce for all trip */
+    /** get distance for all trip */
     if (!directions.routes) {
       return [];
     }
@@ -79,6 +79,7 @@ export const getDistanceSelector = createSelector(
 export const getAvailableStationsSelector = createSelector(
   stationsSelector,
   (stations) => {
+    // get stations that have less than 12 passengers
     return stations
       .filter((station) => {
         return station.bookings.length < BOOK_LIMIT;

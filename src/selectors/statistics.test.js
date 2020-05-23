@@ -3,6 +3,7 @@ import {
   getPaymentInfoPerStationSelector,
   getStationNamesSelector,
   getBookingsCountPerStationSelector,
+  getPaymentForTripSelector,
 } from "./statistics";
 import { mockedStations } from "../tests/mockData";
 
@@ -31,6 +32,11 @@ describe("Statistics Selectors", () => {
       mockedStationsMap
     );
     const expectedOutput = [12, 6, 0, 12];
+    expect(output).toMatchObject(expectedOutput);
+  });
+  it("gets payment methods for stations", () => {
+    const output = getPaymentForTripSelector.resultFunc(mockedStationsMap);
+    const expectedOutput = { cash: 24, credit: 6 };
     expect(output).toMatchObject(expectedOutput);
   });
 });

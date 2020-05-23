@@ -65,3 +65,23 @@ export const getBookingsCountPerStationSelector = createSelector(
     }, []);
   }
 );
+
+export const getPaymentForTripSelector = createSelector(
+  stationsSelector,
+  (stations) => {
+    const data = {
+      [PAYMENT_METHOD.CREDIT]: 0,
+      [PAYMENT_METHOD.CASH]: 0,
+    };
+    stations.forEach((station) => {
+      station.bookings.forEach((booking) => {
+        if (booking.payment === PAYMENT_METHOD.CREDIT) {
+          data[PAYMENT_METHOD.CREDIT]++;
+        } else {
+          data[PAYMENT_METHOD.CASH]++;
+        }
+      });
+    });
+    return data;
+  }
+);
